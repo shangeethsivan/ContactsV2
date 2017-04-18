@@ -1,10 +1,12 @@
 package com.shangeeth.contactsclonev2.jdo;
 
+import java.io.Serializable;
+
 /**
  * Created by user on 17/04/17.
  */
 
-public class PrimaryContactsJDO {
+public class PrimaryContactJDO implements Serializable {
 
     String id;
     String displayName;

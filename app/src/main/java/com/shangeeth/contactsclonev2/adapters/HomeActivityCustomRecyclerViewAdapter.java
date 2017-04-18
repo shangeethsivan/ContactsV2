@@ -1,7 +1,6 @@
 package com.shangeeth.contactsclonev2.adapters;
 
 import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,20 +9,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.shangeeth.contactsclonev2.R;
-import com.shangeeth.contactsclonev2.jdo.PrimaryContactsJDO;
+import com.shangeeth.contactsclonev2.jdo.PrimaryContactJDO;
 import com.shangeeth.contactsclonev2.util.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 
-public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecyclerViewAdapter.ViewHolder> {
+public class HomeActivityCustomRecyclerViewAdapter extends RecyclerView.Adapter<HomeActivityCustomRecyclerViewAdapter.ViewHolder> {
 
 
-    ArrayList<PrimaryContactsJDO> contactsJDOs;
+    ArrayList<PrimaryContactJDO> contactsJDOs;
     private Context mContext;
 
-    public CustomRecyclerViewAdapter(Context mContext, ArrayList<PrimaryContactsJDO> contactsJDOs) {
+    public HomeActivityCustomRecyclerViewAdapter(Context mContext, ArrayList<PrimaryContactJDO> contactsJDOs) {
         this.mContext = mContext;
         this.contactsJDOs = contactsJDOs;
     }
@@ -33,7 +32,7 @@ public class CustomRecyclerViewAdapter extends RecyclerView.Adapter<CustomRecycl
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.rec_view_item, null);
+        View view = inflater.inflate(R.layout.rec_view_item,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
 
         return viewHolder;

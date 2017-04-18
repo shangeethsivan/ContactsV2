@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">ContactsClonev2</string>
+    <string name="name">name</string>
     <string name="id_extra">id</string>
     <string name="are_contacts_loaded">areContactsLoaded</string>
+    <string name="edit">edit</string>
+    <string name="contact_data_jdos">contact_data_jdos</string>
 </resources>

@@ -1,21 +1,21 @@
 package com.shangeeth.contactsclonev2.helper;
 
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.ContactsContract;
-import android.util.Log;
 
 import com.shangeeth.contactsclonev2.db.ContactsDBHelper;
-import com.shangeeth.contactsclonev2.db.ContactsMultipleFieldsTable;
-import com.shangeeth.contactsclonev2.db.ContactsPrimaryTable;
-import com.shangeeth.contactsclonev2.jdo.PrimaryContactsJDO;
+import com.shangeeth.contactsclonev2.db.ContactsDataTable;
+import com.shangeeth.contactsclonev2.db.ContactsTable;
+import com.shangeeth.contactsclonev2.jdo.PrimaryContactJDO;
 import com.shangeeth.contactsclonev2.jdo.SecondaryContactsJDO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by user on 17/04/17.
@@ -28,12 +28,14 @@ public class LoadContactsFromContentProvider {
 
     public void loadContacts(Context context) {
 
+        ArrayList<PrimaryContactJDO> primaryContactJDOs = new ArrayList<>();
+
         ContentResolver lContentResolver = context.getContentResolver();
         Cursor cursor = lContentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {
-                PrimaryContactsJDO contactsJDO = new PrimaryContactsJDO();
+                PrimaryContactJDO contactsJDO = new PrimaryContactJDO();
 
                 String id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
                 contactsJDO.setId(id);
@@ -56,8 +58,7 @@ public class LoadContactsFromContentProvider {
                     contactsJDO.setNote(noteCursor.getString(noteCursor.getColumnIndex(ContactsContract.CommonDataKinds.Note.NOTE)));
                 }
                 noteCursor.close();
-
-
+                
                 Cursor organizationCursor = lContentResolver.query(ContactsContract.Data.CONTENT_URI, null,
                         ContactsContract.Data.MIMETYPE + "=? AND " + ContactsContract.Data.CONTACT_ID + "=?", new String[]{ContactsContract.CommonDataKinds.Organization.CONTENT_ITEM_TYPE, id}, null);
                 if (organizationCursor.moveToFirst()) {
@@ -72,43 +73,28 @@ public class LoadContactsFromContentProvider {
                 }
                 organizationCursor.close();
 
-
-                Cursor imCursor = lContentResolver.query(ContactsContract.Data.CONTENT_URI, null,
-                        ContactsContract.Data.MIMETYPE + "=? AND "+ ContactsContract.Data.CONTACT_ID+" =?", new String[]{ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE,id}, null);
-
-                if (imCursor.moveToFirst()) {
-                    do {
-                        SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
-                        secondaryContactsJDO.setContactId(imCursor.getString(imCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
-                        secondaryContactsJDO.setType(ContactsMultipleFieldsTable.Type.IM);
-                        secondaryContactsJDO.setData(imCursor.getString(imCursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA)));
-
-                    } while (imCursor.moveToNext());
-                }
-                imCursor.close();
-
-                SQLiteDatabase sqLiteDatabase = new ContactsDBHelper(context).getWritableDatabase();
-
-                ContactsPrimaryTable table = new ContactsPrimaryTable();
-                table.insertRow(sqLiteDatabase, contactsJDO);
-
-
-                sqLiteDatabase.close();
+                primaryContactJDOs.add(contactsJDO);
 
             } while (cursor.moveToNext());
 
             cursor.close();
 
+
+            ContactsTable table = new ContactsTable(context);
+            table.insertDatas(primaryContactJDOs);
+
+
+
         }
 
     }
 
-    public void loadDataForSecondaryTable(Context context){
+    public void loadDataForSecondaryTable(Context pContext){
 
-        SQLiteDatabase sqLiteDatabase = new ContactsDBHelper(context).getReadableDatabase();
-        ContentResolver lContentResolver = context.getContentResolver();
-        ContactsMultipleFieldsTable fieldsTable = new ContactsMultipleFieldsTable();
+        SQLiteDatabase sqLiteDatabase = new ContactsDBHelper(pContext).getReadableDatabase();
+        ContentResolver lContentResolver = pContext.getContentResolver();
 
+        ArrayList<SecondaryContactsJDO> lSecondaryContactsJDOs = new ArrayList<>();
                 /*
                 Getting data for the second table
                  */
@@ -119,9 +105,11 @@ public class LoadContactsFromContentProvider {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
                 secondaryContactsJDO.setContactId(phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
-                secondaryContactsJDO.setType(ContactsMultipleFieldsTable.Type.PHONE);
+                secondaryContactsJDO.setType(ContactsDataTable.Type.PHONE);
                 secondaryContactsJDO.setData(phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                fieldsTable.insertRow(sqLiteDatabase, secondaryContactsJDO);
+
+                lSecondaryContactsJDOs.add(secondaryContactsJDO);
+
             } while (phoneNumberCursor.moveToNext());
         }
         phoneNumberCursor.close();
@@ -133,9 +121,11 @@ public class LoadContactsFromContentProvider {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
                 secondaryContactsJDO.setContactId(emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
-                secondaryContactsJDO.setType(ContactsMultipleFieldsTable.Type.EMAIL);
+                secondaryContactsJDO.setType(ContactsDataTable.Type.EMAIL);
                 secondaryContactsJDO.setData(emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)));
-                fieldsTable.insertRow(sqLiteDatabase, secondaryContactsJDO);
+
+                lSecondaryContactsJDOs.add(secondaryContactsJDO);
+
             } while (emailCursor.moveToNext());
         }
         emailCursor.close();
@@ -148,9 +138,11 @@ public class LoadContactsFromContentProvider {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
                 secondaryContactsJDO.setContactId(websiteCursor.getString(websiteCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
-                secondaryContactsJDO.setType(ContactsMultipleFieldsTable.Type.WEBSITE);
+                secondaryContactsJDO.setType(ContactsDataTable.Type.WEBSITE);
                 secondaryContactsJDO.setData(websiteCursor.getString(websiteCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL)));
-                fieldsTable.insertRow(sqLiteDatabase, secondaryContactsJDO);
+
+                lSecondaryContactsJDOs.add(secondaryContactsJDO);
+
             } while (websiteCursor.moveToNext());
         }
         websiteCursor.close();
@@ -162,9 +154,11 @@ public class LoadContactsFromContentProvider {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
                 secondaryContactsJDO.setContactId(imCursor.getString(imCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
-                secondaryContactsJDO.setType(ContactsMultipleFieldsTable.Type.IM);
+                secondaryContactsJDO.setType(ContactsDataTable.Type.IM);
                 secondaryContactsJDO.setData(imCursor.getString(imCursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA)));
-                fieldsTable.insertRow(sqLiteDatabase, secondaryContactsJDO);
+
+                lSecondaryContactsJDOs.add(secondaryContactsJDO);
+
             } while (imCursor.moveToNext());
         }
         imCursor.close();
@@ -176,7 +170,7 @@ public class LoadContactsFromContentProvider {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
                 secondaryContactsJDO.setContactId(addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
-                secondaryContactsJDO.setType(ContactsMultipleFieldsTable.Type.ADDRESS);
+                secondaryContactsJDO.setType(ContactsDataTable.Type.ADDRESS);
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("POBOX", addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX)));
@@ -189,10 +183,17 @@ public class LoadContactsFromContentProvider {
                     e.printStackTrace();
                 }
                 secondaryContactsJDO.setData(jsonObject.toString());
-                fieldsTable.insertRow(sqLiteDatabase, secondaryContactsJDO);
+
+                lSecondaryContactsJDOs.add(secondaryContactsJDO);
+
             } while (addressCursor.moveToNext());
         }
         addressCursor.close();
+
+        ContactsDataTable fieldsTable = new ContactsDataTable(pContext);
+        fieldsTable.insertRows(lSecondaryContactsJDOs);
+
+
     }
 
 

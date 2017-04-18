@@ -24,6 +24,7 @@ public class RoundedTransformation implements com.squareup.picasso.Transformatio
 
     @Override
     public Bitmap transform(final Bitmap source) {
+
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setShader(new BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
