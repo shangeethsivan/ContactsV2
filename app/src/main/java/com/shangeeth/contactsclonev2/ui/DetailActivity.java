@@ -31,6 +31,8 @@ import com.shangeeth.contactsclonev2.jdo.SecondaryContactsJDO;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -60,8 +62,6 @@ public class DetailActivity extends AppCompatActivity {
         ensurePermissions();
 
 
-
-
     }
 
     private void ensurePermissions() {
@@ -75,7 +75,6 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void loadDataFromTable() {
-
 
         mContactsJDO = mContactsTable.getContactsForId(mCurrentId);
 
@@ -107,6 +106,7 @@ public class DetailActivity extends AppCompatActivity {
                 .into(mProfilePicIV);
 
 
+        Collections.sort(mContactsDataJDOs);
         mCustomAdapter = new DetailActivityCustomRecylerViewAdapter(this, mContactsDataJDOs);
         mRecyclerView.setAdapter(mCustomAdapter);
 

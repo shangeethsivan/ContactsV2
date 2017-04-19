@@ -250,50 +250,63 @@ public class EditContactActivity2 extends AppCompatActivity {
         ArrayList<SecondaryContactsJDO> dataTobeAdded = new ArrayList<>();
 
         for (EditTextAndIdJDO lEditTextAndIdJDO : mPhoneEditTextJDO) {
-            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
-            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
-            lSecondaryContactsJDO.setType(ContactsDataTable.Type.PHONE);
-            lSecondaryContactsJDO.setContactId(mCurrentId);
-            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
-            dataTobeAdded.add(lSecondaryContactsJDO);
+
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals("")) {
+                SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+                lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+                lSecondaryContactsJDO.setType(ContactsDataTable.Type.PHONE);
+                lSecondaryContactsJDO.setContactId(mCurrentId);
+                lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                dataTobeAdded.add(lSecondaryContactsJDO);
+            }
         }
         for (EditTextAndIdJDO lEditTextAndIdJDO : mEmailEditTextAndIdJDOs) {
-            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
-            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
-            lSecondaryContactsJDO.setType(ContactsDataTable.Type.EMAIL);
-            lSecondaryContactsJDO.setContactId(mCurrentId);
-            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
-            dataTobeAdded.add(lSecondaryContactsJDO);
+
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals("")) {
+                SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+                lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+                lSecondaryContactsJDO.setType(ContactsDataTable.Type.EMAIL);
+                lSecondaryContactsJDO.setContactId(mCurrentId);
+                lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                dataTobeAdded.add(lSecondaryContactsJDO);
+            }
         }
         for (EditTextAndIdJDO lEditTextAndIdJDO : mWebsiteEditTextAndIdJDOs) {
-            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
-            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
-            lSecondaryContactsJDO.setType(ContactsDataTable.Type.WEBSITE);
-            lSecondaryContactsJDO.setContactId(mCurrentId);
-            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
-            dataTobeAdded.add(lSecondaryContactsJDO);
+
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals("")) {
+                SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+                lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+                lSecondaryContactsJDO.setType(ContactsDataTable.Type.WEBSITE);
+                lSecondaryContactsJDO.setContactId(mCurrentId);
+                lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                dataTobeAdded.add(lSecondaryContactsJDO);
+            }
         }
         for (EditTextAndIdJDO lEditTextAndIdJDO : mImEditTextAndIdJDOs) {
-            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
-            lSecondaryContactsJDO.setType(ContactsDataTable.Type.IM);
-            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
-            lSecondaryContactsJDO.setContactId(mCurrentId);
-            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
-            dataTobeAdded.add(lSecondaryContactsJDO);
+
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals("")) {
+                SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+                lSecondaryContactsJDO.setType(ContactsDataTable.Type.IM);
+                lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+                lSecondaryContactsJDO.setContactId(mCurrentId);
+                lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                dataTobeAdded.add(lSecondaryContactsJDO);
+            }
         }
         for (EditTextAndIdJDO lEditTextAndIdJDO : mAddressEditTextAndIdJDOs) {
-            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
-            lSecondaryContactsJDO.setType(ContactsDataTable.Type.ADDRESS);
-            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
-            lSecondaryContactsJDO.setContactId(mCurrentId);
-            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
-            dataTobeAdded.add(lSecondaryContactsJDO);
+
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals("")) {
+                SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+                lSecondaryContactsJDO.setType(ContactsDataTable.Type.ADDRESS);
+                lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+                lSecondaryContactsJDO.setContactId(mCurrentId);
+                lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                dataTobeAdded.add(lSecondaryContactsJDO);
+            }
         }
 
         //Inserting or Updating new Data Based on Ids
         dataTable.insertOrUpdateData(dataTobeAdded);
-
-
 
         /*
         Setting the intent to update the datas in the DetailActivity

@@ -1,12 +1,16 @@
 package com.shangeeth.contactsclonev2.jdo;
 
+import android.support.annotation.NonNull;
+
+import com.shangeeth.contactsclonev2.util.Util;
+
 import java.io.Serializable;
 
 /**
  * Created by user on 18/04/17.
  */
 
-public class SecondaryContactsJDO implements Serializable{
+public class SecondaryContactsJDO implements Serializable,Comparable<SecondaryContactsJDO>{
 
     String contactId;
     String type;
@@ -43,5 +47,12 @@ public class SecondaryContactsJDO implements Serializable{
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    @Override
+    public int compareTo(@NonNull SecondaryContactsJDO contactsJDO) {
+
+        return Util.getTypeOrderIndex(getType())-Util.getTypeOrderIndex(contactsJDO.getType());
+
     }
 }
