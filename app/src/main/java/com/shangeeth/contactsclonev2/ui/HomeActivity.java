@@ -59,8 +59,21 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void init() {
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
         maddContactFab = (FloatingActionButton) findViewById(R.id.add_contact_fab);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(),layoutManager.getOrientation()));
+
+        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+                startActivityForResult(new Intent(HomeActivity.this, DetailActivity.class).putExtra(getString(R.string.id_extra), mContactListJDO.get(position).getId()),0);
+
+            }
+        }));
     }
 
     public void setOnClickListeners(){
@@ -82,31 +95,20 @@ public class HomeActivity extends AppCompatActivity {
         mContactListJDO = table.getContactsForList();
         mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this, mContactListJDO);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(),layoutManager.getOrientation()));
-        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+       mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-
-                    startActivity(new Intent(HomeActivity.this, DetailActivity.class).putExtra(getString(R.string.id_extra), mContactListJDO.get(position).getId()));
-
-            }
-        }));
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 0) {
-            boolean permissionGranted = true;
-            for (int result : grantResults) {
-                if (result == PackageManager.PERMISSION_DENIED) {
-                    permissionGranted = false;
+            boolean lPermissionGranted = true;
+            for (int lResult : grantResults) {
+                if (lResult == PackageManager.PERMISSION_DENIED) {
+                    lPermissionGranted = false;
                 }
             }
-            if (permissionGranted) {
+            if (lPermissionGranted) {
                 loadContactsFromContentProvider();
             } else {
                 finish();
@@ -162,4 +164,17 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == 0){
+            if(data!=null && data.getBooleanExtra(getString(R.string.is_data_updated),false)){
+
+                mContactListJDO.clear();
+
+                loadContacts();
+                mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this,mContactListJDO);
+                mRecyclerView.setAdapter(mRecyclerViewAdapter);
+            }
+        }
+    }
 }

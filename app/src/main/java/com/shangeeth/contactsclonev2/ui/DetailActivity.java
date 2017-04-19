@@ -1,20 +1,24 @@
 package com.shangeeth.contactsclonev2.ui;
 
+import android.Manifest;
 import android.content.Intent;
-import android.media.Image;
+import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.shangeeth.contactsclonev2.EditContactActivity;
 import com.shangeeth.contactsclonev2.R;
@@ -36,63 +40,77 @@ public class DetailActivity extends AppCompatActivity {
     private ContactsTable mContactsTable;
     private RecyclerView mRecyclerView;
     private ArrayList<SecondaryContactsJDO> mContactsDataJDOs;
+    private String mCurrentId;
+    private int REQUEST_CODE = 100;
+    private boolean mUpdated = false;
+    private DetailActivityCustomRecylerViewAdapter mCustomAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        Log.e(DetailActivity.class.getSimpleName(), "onCreate: created" );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        String lId = getIntent().getStringExtra(getString(R.string.id_extra));
+        mCurrentId = getIntent().getStringExtra(getString(R.string.id_extra));
 
         init();
 
-        mContactsJDO = mContactsTable.getContactForId(lId);
+        ensurePermissions();
+
+
+
+
+    }
+
+    private void ensurePermissions() {
+
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CALL_PHONE},0);
+        }else {
+            loadDataFromTable();
+        }
+
+    }
+
+    private void loadDataFromTable() {
+
+
+        mContactsJDO = mContactsTable.getContactsForId(mCurrentId);
 
         ContactsDataTable lDataTable = new ContactsDataTable(this);
 
-        mContactsDataJDOs = lDataTable.getDatasForId(lId);
+        mContactsDataJDOs = lDataTable.getDatasForId(mCurrentId);
 
         SecondaryContactsJDO noteJDO = new SecondaryContactsJDO();
-        noteJDO.setContactId(lId);
+        noteJDO.setContactId(mCurrentId);
         noteJDO.setData(mContactsJDO.getNote());
         noteJDO.setType("Note");
         mContactsDataJDOs.add(noteJDO);
 
         SecondaryContactsJDO organizationJDO = new SecondaryContactsJDO();
-        organizationJDO.setContactId(lId);
+        organizationJDO.setContactId(mCurrentId);
         organizationJDO.setData(mContactsJDO.getOraganization());
         organizationJDO.setType("Organization");
 
         mContactsDataJDOs.add(organizationJDO);
 
-        mRecyclerView.setAdapter(new DetailActivityCustomRecylerViewAdapter(this, mContactsDataJDOs));
 
-        mRecyclerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
-            @Override
-            public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-                if(e.getAction() == MotionEvent.ACTION_UP){
-                }
-                return false;
-            }
-
-            @Override
-            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-            }
-
-            @Override
-            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
-            }
-        });
+        /*
+        Loading data for title and image
+         */
         mToolbarLayout.setTitle(mContactsJDO.getDisplayName());
         Picasso.with(this)
                 .load(mContactsJDO.getPhotoUri())
                 .placeholder(R.drawable.contact_bg)
                 .into(mProfilePicIV);
 
+
+        mCustomAdapter = new DetailActivityCustomRecylerViewAdapter(this, mContactsDataJDOs);
+        mRecyclerView.setAdapter(mCustomAdapter);
+
     }
+
 
     public void init() {
 
@@ -123,6 +141,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        setResult(0,new Intent().putExtra(getString(R.string.is_data_updated),mUpdated));
+        finish();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_contact:
@@ -131,13 +155,47 @@ public class DetailActivity extends AppCompatActivity {
                 Intent lIntent = new Intent(this, EditContactActivity.class);
                 lIntent.putExtra(getString(R.string.contact_data_jdos), mContactsDataJDOs);
                 lIntent.putExtra(getString(R.string.name),mContactsJDO.getDisplayName());
+                lIntent.putExtra(getString(R.string.id_extra), mCurrentId);
 
-                startActivity(lIntent);
+                startActivityForResult(lIntent,REQUEST_CODE);
+
                 break;
             case android.R.id.home:
+                setResult(0,new Intent().putExtra(getString(R.string.is_data_updated),mUpdated));
                 finish();
                 break;
         }
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if(requestCode == REQUEST_CODE && resultCode == 1){
+
+            mUpdated = true;
+            loadDataFromTable();
+
+            mCustomAdapter = new DetailActivityCustomRecylerViewAdapter(this,mContactsDataJDOs);
+            mRecyclerView.setAdapter(mCustomAdapter);
+
+            Snackbar.make((CoordinatorLayout)findViewById(R.id.coordinator_layout),"Contact Updated Successfully",Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == 0 ){
+            boolean lArePermissionsGranted = true;
+
+            for(int lResult:grantResults){
+                if(lResult== PackageManager.PERMISSION_DENIED){
+                    lArePermissionsGranted = false;
+                }
+            }
+            if(lArePermissionsGranted){
+                loadDataFromTable();
+            }
+        }
     }
 }

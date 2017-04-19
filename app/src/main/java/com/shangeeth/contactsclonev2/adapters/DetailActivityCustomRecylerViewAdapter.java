@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,10 @@ import android.widget.TextView;
 import com.shangeeth.contactsclonev2.R;
 import com.shangeeth.contactsclonev2.db.ContactsDataTable;
 import com.shangeeth.contactsclonev2.jdo.SecondaryContactsJDO;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -35,9 +40,9 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        LayoutInflater lInflater        = LayoutInflater.from(parent.getContext());
-        View lView                      = lInflater.inflate(R.layout.rec_view_detail_item, parent, false);
-        ViewHolder lViewHolder          = new ViewHolder(lView);
+        LayoutInflater lInflater = LayoutInflater.from(parent.getContext());
+        View lView = lInflater.inflate(R.layout.rec_view_detail_item, parent, false);
+        ViewHolder lViewHolder = new ViewHolder(lView);
 
         return lViewHolder;
     }
@@ -47,23 +52,32 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
 
         String lData = mContactsJDOs.get(position).getData();
 
-        if (lData != null) {
+        if (lData != null && !lData.equals("")) {
 
-            if (mContactsJDOs.get(position).getType().equalsIgnoreCase(ContactsDataTable.Type.PHONE)) {
+             /*
+                Displaying buttons based on the type
+             */
+
+            String type = mContactsJDOs.get(position).getType();
+
+            if (type.equalsIgnoreCase(ContactsDataTable.Type.PHONE)) {
 
                 holder.mCallIV.setVisibility(View.VISIBLE);
                 holder.mMessageIV.setVisibility(View.VISIBLE);
 
-            } else if (mContactsJDOs.get(position).getType().equalsIgnoreCase(ContactsDataTable.Type.EMAIL)) {
+            } else if (type.equalsIgnoreCase(ContactsDataTable.Type.EMAIL)) {
 
                 holder.mEmailIV.setVisibility(View.VISIBLE);
 
-            } else if(mContactsJDOs.get(position).getType().equalsIgnoreCase(ContactsDataTable.Type.WEBSITE)){
+            } else if (type.equalsIgnoreCase(ContactsDataTable.Type.WEBSITE)) {
                 holder.mWebsiteIV.setVisibility(View.VISIBLE);
-            } 
-            holder.mDataTV.setText(mContactsJDOs.get(position).getData());
+            }
 
-            String type = mContactsJDOs.get(position).getType();
+
+            /*
+                Hiding the type if it is the repeated type
+             */
+
 
             if (mLastDisplayedType.equals(type)) {
                 mIsNewCategory = false;
@@ -79,9 +93,34 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
                     type = type.toUpperCase();
                 }
                 holder.mTypeTV.setText(type);
+
             } else {
                 holder.mTypeTV.setVisibility(View.GONE);
             }
+
+            if (type.equalsIgnoreCase(ContactsDataTable.Type.ADDRESS) || type.equalsIgnoreCase("Organization")) {
+
+                try {
+                    StringBuilder lBuilder = new StringBuilder();
+
+                    JSONObject lObject = new JSONObject(lData);
+
+                    JSONArray jsonArray = lObject.names();
+
+                    holder.mDataTV.setLines(jsonArray.length());
+                    for(int i=0;i<jsonArray.length();i++){
+                        lBuilder.append(lObject.getString(jsonArray.get(i).toString())).append("\n");
+                    }
+
+                    lData = lBuilder.toString();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            holder.mDataTV.setText(lData);
+
         }
     }
 
@@ -104,12 +143,12 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
 
             super(itemView);
 
-            mTypeTV             = (TextView) itemView.findViewById(R.id.type_tv);
-            mDataTV             = (TextView) itemView.findViewById(R.id.data_tv);
-            mCallIV             = (ImageView) itemView.findViewById(R.id.call_iv);
-            mMessageIV          = (ImageView) itemView.findViewById(R.id.message_iv);
-            mEmailIV            = (ImageView) itemView.findViewById(R.id.email_iv);
-            mWebsiteIV            = (ImageView) itemView.findViewById(R.id.website_iv);
+            mTypeTV = (TextView) itemView.findViewById(R.id.type_tv);
+            mDataTV = (TextView) itemView.findViewById(R.id.data_tv);
+            mCallIV = (ImageView) itemView.findViewById(R.id.call_iv);
+            mMessageIV = (ImageView) itemView.findViewById(R.id.message_iv);
+            mEmailIV = (ImageView) itemView.findViewById(R.id.email_iv);
+            mWebsiteIV = (ImageView) itemView.findViewById(R.id.website_iv);
 
             mCallIV.setOnClickListener(this);
             mMessageIV.setOnClickListener(this);
@@ -134,8 +173,8 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
                     break;
                 case R.id.website_iv:
                     String data = mDataTV.getText().toString();
-                    if(!data.contains("http://")){
-                        data = "http://"+data;
+                    if (!data.contains("http://")) {
+                        data = "http://" + data;
                     }
                     Intent lWebsiteIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(data));
                     v.getContext().startActivity(lWebsiteIntent);

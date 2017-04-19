@@ -11,6 +11,15 @@ public class SecondaryContactsJDO implements Serializable{
     String contactId;
     String type;
     String data;
+    String id;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getContactId() {
         return contactId;

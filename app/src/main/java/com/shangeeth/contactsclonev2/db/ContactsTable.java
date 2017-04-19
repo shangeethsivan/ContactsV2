@@ -46,7 +46,7 @@ public class ContactsTable {
     }
 
 
-    public PrimaryContactJDO getContactForId(String id) {
+    public PrimaryContactJDO getContactsForId(String id) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
 
@@ -144,6 +144,19 @@ public class ContactsTable {
         values.put(ORGANIZATION, pJDO.getOraganization());
 
         lSqLiteDatabase.insert(TABLE_NAME, null, values);
+
+    }
+
+    public void updateRow(PrimaryContactJDO pJDO){
+
+        SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DISPLAY_NAME, pJDO.getDisplayName());
+        values.put(NOTE, pJDO.getNote());
+        values.put(ORGANIZATION, pJDO.getOraganization());
+
+        lSqLiteDatabase.update(TABLE_NAME,values,_ID+"=?",new String[]{pJDO.getId()});
 
     }
 

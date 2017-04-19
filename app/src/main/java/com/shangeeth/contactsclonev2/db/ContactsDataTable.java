@@ -30,6 +30,13 @@ public class ContactsDataTable {
         public static final String WEBSITE = "website";
         public static final String IM = "im";
         public static final String ADDRESS = "address";
+
+        public static boolean checkType(String type) {
+            if (type.equals(PHONE) || type.equals(EMAIL) || type.equals(WEBSITE) || type.equals(IM) || type.equals(ADDRESS))
+                return true;
+            else
+                return false;
+        }
     }
 
     public void createTable(SQLiteDatabase db) {
@@ -51,7 +58,7 @@ public class ContactsDataTable {
         values.put(DATA, pJDO.getData());
 
         lSqliteDatabase.insert(TABLE_NAME, null, values);
-
+        lSqliteDatabase.close();
     }
 
     public void insertRows(ArrayList<SecondaryContactsJDO> pContactJDOs) {
@@ -74,6 +81,30 @@ public class ContactsDataTable {
         }
     }
 
+    public void updateRows(ArrayList<SecondaryContactsJDO> pContactJDOs) {
+
+
+        SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
+
+        lSqLiteDatabase.beginTransaction();
+
+        try{
+        for (SecondaryContactsJDO pContactJDO : pContactJDOs) {
+
+            ContentValues values = new ContentValues();
+            values.put(TYPE, pContactJDO.getType());
+            values.put(DATA, pContactJDO.getData());
+
+            lSqLiteDatabase.update(TABLE_NAME, values, _ID + "=?", new String[]{pContactJDO.getId()});
+        }
+        lSqLiteDatabase.setTransactionSuccessful();
+        }
+        finally {
+            lSqLiteDatabase.endTransaction();
+            lSqLiteDatabase.close();
+        }
+    }
+
 
     public ArrayList<SecondaryContactsJDO> getDatasForId(String id) {
 
@@ -89,6 +120,7 @@ public class ContactsDataTable {
                 contactsPOJO.setContactId(cursor.getString(cursor.getColumnIndex(CONTACT_ID)));
                 contactsPOJO.setType(cursor.getString(cursor.getColumnIndex(TYPE)));
                 contactsPOJO.setData(cursor.getString(cursor.getColumnIndex(DATA)));
+                contactsPOJO.setId(cursor.getString(cursor.getColumnIndex(_ID)));
                 contactsPOJOs.add(contactsPOJO);
             } while (cursor.moveToNext());
 
@@ -96,6 +128,7 @@ public class ContactsDataTable {
 
         cursor.close();
 
+        lSqLiteDatabase.close();
         return contactsPOJOs;
     }
 

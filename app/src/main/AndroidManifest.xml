@@ -13,16 +13,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ui.HomeActivity">
+
+        </activity>
+        <activity
+            android:name=".ui.DetailActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".EditContactActivity" />
+        <activity android:name=".EditContactActivity2">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity
-            android:name=".ui.DetailActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar" />
-        <activity android:name=".EditContactActivity"></activity>
     </application>
 
 </manifest>
