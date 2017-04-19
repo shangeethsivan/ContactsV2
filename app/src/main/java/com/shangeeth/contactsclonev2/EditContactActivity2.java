@@ -95,6 +95,13 @@ public class EditContactActivity2 extends AppCompatActivity {
         mOrgEDT = (EditText) findViewById(R.id.organization_edt);
 
 
+        mPhoneEditTextJDO = new ArrayList<>();
+        mEmailEditTextAndIdJDOs = new ArrayList<>();
+        mWebsiteEditTextAndIdJDOs = new ArrayList<>();
+        mImEditTextAndIdJDOs = new ArrayList<>();
+        mAddressEditTextAndIdJDOs = new ArrayList<>();
+
+
         mFab = (FloatingActionButton) findViewById(R.id.save_fab);
 
         mPhoneEditTexts = new ArrayList<>();
@@ -115,12 +122,11 @@ public class EditContactActivity2 extends AppCompatActivity {
 
         setOnClickListeners();
 
-
-
+        loadAllDatas();
     }
 
 
-    public void loadAlldatas(){
+    public void loadAllDatas() {
 
         mNameEDT.setText(mContactName);
 
@@ -132,23 +138,23 @@ public class EditContactActivity2 extends AppCompatActivity {
 
                 if (type.equalsIgnoreCase(ContactsDataTable.Type.PHONE)) {
 
-                    addView(mLinearLayoutPhone, mPhoneEditTexts, mPhoneViews, InputType.TYPE_CLASS_PHONE, lSecondaryContactsJDO.getData());
+                    addView(mLinearLayoutPhone, mPhoneEditTextJDO, mPhoneViews, InputType.TYPE_CLASS_PHONE, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId());
 
                 } else if (type.equalsIgnoreCase(ContactsDataTable.Type.EMAIL)) {
 
-                    addView(mLinearLayoutEmail, mEmailEditTexts, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData());
+                    addView(mLinearLayoutEmail, mEmailEditTextAndIdJDOs, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId());
 
                 } else if (type.equalsIgnoreCase(ContactsDataTable.Type.WEBSITE)) {
 
-                    addView(mLinearLayoutWebsite, mWebsiteEditTexts, mWebsiteViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData());
+                    addView(mLinearLayoutWebsite, mWebsiteEditTextAndIdJDOs, mWebsiteViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId());
 
                 } else if (type.equalsIgnoreCase(ContactsDataTable.Type.IM)) {
 
-                    addView(mLinearLayoutIM, mImEditTexts, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData());
+                    addView(mLinearLayoutIM, mImEditTextAndIdJDOs, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId());
 
                 } else if (type.equalsIgnoreCase(ContactsDataTable.Type.ADDRESS)) {
 
-                    addView(mLinearLayoutAddress, mAddressEditTexts, mAddressViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData());
+                    addView(mLinearLayoutAddress, mAddressEditTextAndIdJDOs, mAddressViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId());
 
                 }
             } else if (type.equalsIgnoreCase("Note")) {
@@ -165,7 +171,7 @@ public class EditContactActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addView(mLinearLayoutPhone, mPhoneEditTexts, mPhoneViews, InputType.TYPE_CLASS_PHONE, "");
+                addView(mLinearLayoutPhone, mPhoneEditTextJDO, mPhoneViews, InputType.TYPE_CLASS_PHONE, "", "-1");
 
             }
         });
@@ -173,7 +179,7 @@ public class EditContactActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addView(mLinearLayoutEmail, mEmailEditTexts, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "");
+                addView(mLinearLayoutEmail, mEmailEditTextAndIdJDOs, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "-1");
 
             }
         });
@@ -182,7 +188,7 @@ public class EditContactActivity2 extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                addView(mLinearLayoutWebsite, mWebsiteEditTexts, mWebsiteViews, InputType.TYPE_CLASS_TEXT, "");
+                addView(mLinearLayoutWebsite, mWebsiteEditTextAndIdJDOs, mWebsiteViews, InputType.TYPE_CLASS_TEXT, "", "-1");
 
 
             }
@@ -191,7 +197,7 @@ public class EditContactActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addView(mLinearLayoutIM, mImEditTexts, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "");
+                addView(mLinearLayoutIM, mImEditTextAndIdJDOs, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "-1");
 
 
             }
@@ -200,7 +206,7 @@ public class EditContactActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addView(mLinearLayoutAddress, mAddressEditTexts, mAddressViews, InputType.TYPE_CLASS_TEXT, "");
+                addView(mLinearLayoutAddress, mAddressEditTextAndIdJDOs, mAddressViews, InputType.TYPE_CLASS_TEXT, "", "-1");
 
             }
         });
@@ -242,16 +248,19 @@ public class EditContactActivity2 extends AppCompatActivity {
      * @param pViews
      * @param pLayout
      */
-    public void removeLastViewInPhone(ArrayList<View> pViews, LinearLayout pLayout) {
+    public void removeLastViewInPhone(ArrayList<View> pViews, ArrayList<EditTextAndIdJDO> pEditTextAndIdJDOs, LinearLayout pLayout) {
 
         //TODO: If needed delete the edit text this can be a your source of issue if you are using the arraylist of editTexts
+
         pLayout.removeView(pViews.get(pViews.size() - 1));
         pViews.remove(pViews.get(pViews.size() - 1));
+        pEditTextAndIdJDOs.remove(pEditTextAndIdJDOs.get(pEditTextAndIdJDOs.size() - 1));
 
     }
 
     /**
      * Sets the last View in the group with a delete Button
+     *
      * @param pViews the arrayList of view groups
      */
     public void setLastViewWithDeleteButton(ArrayList<View> pViews) {
@@ -267,26 +276,29 @@ public class EditContactActivity2 extends AppCompatActivity {
 
 
     /**
-     * Create a view and add the View to pLinearLayout -- Not USED for now
-     *
-     * @param pLinearLayout the layout to add the view
-     * @param pEditTexts    arrayList of edittexts
-     * @param pViews        arraylist of views
-     * @param pInputType    the type of
+     * @param pLinearLayout
+     * @param pEditTextAndIdJDOs
+     * @param pViews
+     * @param pInputType
+     * @param pData
+     * @param pId
      */
-    public void addView(final LinearLayout pLinearLayout, ArrayList<EditText> pEditTexts, final ArrayList<View> pViews, int pInputType, String pData) {
+    public void addView(final LinearLayout pLinearLayout, final ArrayList<EditTextAndIdJDO> pEditTextAndIdJDOs, final ArrayList<View> pViews, int pInputType, String pData, String pId) {
 
         View lView = mInflater.inflate(R.layout.dynamic_item, pLinearLayout, false);
         EditText editText = (EditText) lView.findViewById(R.id.data_edt);
         editText.setText(pData);
         editText.setInputType(pInputType);
-        pEditTexts.add(editText);
+
+        pEditTextAndIdJDOs.add(new EditTextAndIdJDO(editText, pId));
+
+//        pEditTexts.add(editText);
         pViews.add(lView);
 
         ((ImageView) lView.findViewById(R.id.delete_iv)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeLastViewInPhone(pViews, pLinearLayout);
+                removeLastViewInPhone(pViews, pEditTextAndIdJDOs, pLinearLayout);
                 setLastViewWithDeleteButton(pViews);
             }
         });
@@ -296,7 +308,7 @@ public class EditContactActivity2 extends AppCompatActivity {
         pLinearLayout.addView(lView);
     }
 
-    public class EditTextAndIdJDO{
+    public class EditTextAndIdJDO {
         EditText mEditText;
         String mId;
 
