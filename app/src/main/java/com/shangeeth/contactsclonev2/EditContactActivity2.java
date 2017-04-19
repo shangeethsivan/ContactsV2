@@ -64,6 +64,8 @@ public class EditContactActivity2 extends AppCompatActivity {
     private FloatingActionButton mFab;
     private String mContactName;
 
+    ArrayList<String> idsTobeDeleted;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -118,6 +120,8 @@ public class EditContactActivity2 extends AppCompatActivity {
 
         mAddressEditTexts = new ArrayList<>();
         mAddressViews = new ArrayList<>();
+
+        idsTobeDeleted = new ArrayList<>();
 
 
         setOnClickListeners();
@@ -232,9 +236,68 @@ public class EditContactActivity2 extends AppCompatActivity {
         ContactsTable table = new ContactsTable(this);
         table.updateRow(lPrimaryContactJDO);
 
+        ContactsDataTable dataTable = new ContactsDataTable(this);
+
+
+        //Delete if there is any id to be deleted
+
+        if (idsTobeDeleted.size() > 0) {
+            dataTable.deleteDataForIds(idsTobeDeleted);
+        }
+
         //Get all the second table data
 
+        ArrayList<SecondaryContactsJDO> dataTobeAdded = new ArrayList<>();
 
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mPhoneEditTextJDO) {
+            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+            lSecondaryContactsJDO.setType(ContactsDataTable.Type.PHONE);
+            lSecondaryContactsJDO.setContactId(mCurrentId);
+            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            dataTobeAdded.add(lSecondaryContactsJDO);
+        }
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mEmailEditTextAndIdJDOs) {
+            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+            lSecondaryContactsJDO.setType(ContactsDataTable.Type.EMAIL);
+            lSecondaryContactsJDO.setContactId(mCurrentId);
+            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            dataTobeAdded.add(lSecondaryContactsJDO);
+        }
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mWebsiteEditTextAndIdJDOs) {
+            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+            lSecondaryContactsJDO.setType(ContactsDataTable.Type.WEBSITE);
+            lSecondaryContactsJDO.setContactId(mCurrentId);
+            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            dataTobeAdded.add(lSecondaryContactsJDO);
+        }
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mImEditTextAndIdJDOs) {
+            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+            lSecondaryContactsJDO.setType(ContactsDataTable.Type.IM);
+            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+            lSecondaryContactsJDO.setContactId(mCurrentId);
+            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            dataTobeAdded.add(lSecondaryContactsJDO);
+        }
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mAddressEditTextAndIdJDOs) {
+            SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+            lSecondaryContactsJDO.setType(ContactsDataTable.Type.ADDRESS);
+            lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
+            lSecondaryContactsJDO.setContactId(mCurrentId);
+            lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            dataTobeAdded.add(lSecondaryContactsJDO);
+        }
+
+        //Inserting or Updating new Data Based on Ids
+        dataTable.insertOrUpdateData(dataTobeAdded);
+
+
+
+        /*
+        Setting the intent to update the datas in the DetailActivity
+         */
         Intent intent = new Intent();
         intent.putExtra(getString(R.string.id_extra), mCurrentId);
         setResult(1, intent);
@@ -254,6 +317,10 @@ public class EditContactActivity2 extends AppCompatActivity {
 
         pLayout.removeView(pViews.get(pViews.size() - 1));
         pViews.remove(pViews.get(pViews.size() - 1));
+        String lId = pEditTextAndIdJDOs.get(pEditTextAndIdJDOs.size() - 1).getmId();
+        if (!lId.equals("-1")) {
+            idsTobeDeleted.add(lId);
+        }
         pEditTextAndIdJDOs.remove(pEditTextAndIdJDOs.get(pEditTextAndIdJDOs.size() - 1));
 
     }

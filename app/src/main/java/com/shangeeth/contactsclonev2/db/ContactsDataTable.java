@@ -88,18 +88,17 @@ public class ContactsDataTable {
 
         lSqLiteDatabase.beginTransaction();
 
-        try{
-        for (SecondaryContactsJDO pContactJDO : pContactJDOs) {
+        try {
+            for (SecondaryContactsJDO pContactJDO : pContactJDOs) {
 
-            ContentValues values = new ContentValues();
-            values.put(TYPE, pContactJDO.getType());
-            values.put(DATA, pContactJDO.getData());
+                ContentValues values = new ContentValues();
+                values.put(TYPE, pContactJDO.getType());
+                values.put(DATA, pContactJDO.getData());
 
-            lSqLiteDatabase.update(TABLE_NAME, values, _ID + "=?", new String[]{pContactJDO.getId()});
-        }
-        lSqLiteDatabase.setTransactionSuccessful();
-        }
-        finally {
+                lSqLiteDatabase.update(TABLE_NAME, values, _ID + "=?", new String[]{pContactJDO.getId()});
+            }
+            lSqLiteDatabase.setTransactionSuccessful();
+        } finally {
             lSqLiteDatabase.endTransaction();
             lSqLiteDatabase.close();
         }
@@ -132,5 +131,49 @@ public class ContactsDataTable {
         return contactsPOJOs;
     }
 
+    public void deleteDataForIds(ArrayList<String> pIds) {
+
+        SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
+
+        try {
+            lSqLiteDatabase.beginTransaction();
+
+            for (String lId : pIds) {
+                lSqLiteDatabase.delete(TABLE_NAME, _ID + "=?", new String[]{lId});
+            }
+
+            lSqLiteDatabase.setTransactionSuccessful();
+
+        } finally {
+            lSqLiteDatabase.endTransaction();
+        }
+    }
+    public void insertOrUpdateData(ArrayList<SecondaryContactsJDO> pSecondaryContactsJDOs) {
+
+        SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
+
+        try {
+            lSqLiteDatabase.beginTransaction();
+
+            for(SecondaryContactsJDO lSecondaryContactsJDO:pSecondaryContactsJDOs){
+
+                ContentValues lContentValues = new ContentValues();
+                if(!lSecondaryContactsJDO.getId().equals("-1")){
+                    lContentValues.put(DATA,lSecondaryContactsJDO.getData());
+                    lSqLiteDatabase.update(TABLE_NAME,lContentValues,_ID+"=?",new String[]{lSecondaryContactsJDO.getId()});
+                }else {
+                    lContentValues.put(CONTACT_ID,lSecondaryContactsJDO.getContactId());
+                    lContentValues.put(TYPE,lSecondaryContactsJDO.getType());
+                    lContentValues.put(DATA,lSecondaryContactsJDO.getData());
+                    lSqLiteDatabase.insert(TABLE_NAME,null,lContentValues);
+                }
+            }
+
+            lSqLiteDatabase.setTransactionSuccessful();
+
+        } finally {
+            lSqLiteDatabase.endTransaction();
+        }
+    }
 
 }
