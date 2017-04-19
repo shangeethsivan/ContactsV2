@@ -1,6 +1,7 @@
 package com.shangeeth.contactsclonev2;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -9,9 +10,10 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.shangeeth.contactsclonev2.db.ContactsDataTable;
+import com.shangeeth.contactsclonev2.db.ContactsTable;
+import com.shangeeth.contactsclonev2.jdo.PrimaryContactJDO;
 import com.shangeeth.contactsclonev2.jdo.SecondaryContactsJDO;
 
 import java.util.ArrayList;
@@ -35,26 +37,36 @@ public class EditContactActivity2 extends AppCompatActivity {
     ImageView mAddressAddIV;
 
     ArrayList<EditText> mPhoneEditTexts;
+    ArrayList<EditTextAndIdJDO> mPhoneEditTextJDO;
     ArrayList<View> mPhoneViews;
 
     ArrayList<EditText> mEmailEditTexts;
     ArrayList<View> mEmailViews;
+    ArrayList<EditTextAndIdJDO> mEmailEditTextAndIdJDOs;
+
 
     ArrayList<EditText> mWebsiteEditTexts;
     ArrayList<View> mWebsiteViews;
+    ArrayList<EditTextAndIdJDO> mWebsiteEditTextAndIdJDOs;
 
     ArrayList<EditText> mImEditTexts;
     ArrayList<View> mImViews;
+    ArrayList<EditTextAndIdJDO> mImEditTextAndIdJDOs;
 
     ArrayList<EditText> mAddressEditTexts;
     ArrayList<View> mAddressViews;
+    ArrayList<EditTextAndIdJDO> mAddressEditTextAndIdJDOs;
 
     private LayoutInflater mInflater;
     private ArrayList<SecondaryContactsJDO> mContactsJDOs;
     private String mCurrentId;
 
+    private FloatingActionButton mFab;
+    private String mContactName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_contact2);
 
@@ -62,6 +74,7 @@ public class EditContactActivity2 extends AppCompatActivity {
         Intent intent = getIntent();
         mContactsJDOs = (ArrayList<SecondaryContactsJDO>) intent.getSerializableExtra(getString(R.string.contact_data_jdos));
         mCurrentId = intent.getStringExtra(getString(R.string.id_extra));
+        mContactName = intent.getStringExtra(getString(R.string.name));
 
         mInflater = getLayoutInflater();
 
@@ -82,6 +95,8 @@ public class EditContactActivity2 extends AppCompatActivity {
         mOrgEDT = (EditText) findViewById(R.id.organization_edt);
 
 
+        mFab = (FloatingActionButton) findViewById(R.id.save_fab);
+
         mPhoneEditTexts = new ArrayList<>();
         mPhoneViews = new ArrayList<>();
 
@@ -101,6 +116,14 @@ public class EditContactActivity2 extends AppCompatActivity {
         setOnClickListeners();
 
 
+
+    }
+
+
+    public void loadAlldatas(){
+
+        mNameEDT.setText(mContactName);
+
         for (SecondaryContactsJDO lSecondaryContactsJDO : mContactsJDOs) {
 
             String type = lSecondaryContactsJDO.getType();
@@ -109,14 +132,32 @@ public class EditContactActivity2 extends AppCompatActivity {
 
                 if (type.equalsIgnoreCase(ContactsDataTable.Type.PHONE)) {
 
-                    addView(mLinearLayoutPhone, mPhoneEditTexts, mPhoneViews, InputType.TYPE_CLASS_PHONE, "");
+                    addView(mLinearLayoutPhone, mPhoneEditTexts, mPhoneViews, InputType.TYPE_CLASS_PHONE, lSecondaryContactsJDO.getData());
+
+                } else if (type.equalsIgnoreCase(ContactsDataTable.Type.EMAIL)) {
+
+                    addView(mLinearLayoutEmail, mEmailEditTexts, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData());
+
+                } else if (type.equalsIgnoreCase(ContactsDataTable.Type.WEBSITE)) {
+
+                    addView(mLinearLayoutWebsite, mWebsiteEditTexts, mWebsiteViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData());
+
+                } else if (type.equalsIgnoreCase(ContactsDataTable.Type.IM)) {
+
+                    addView(mLinearLayoutIM, mImEditTexts, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData());
+
+                } else if (type.equalsIgnoreCase(ContactsDataTable.Type.ADDRESS)) {
+
+                    addView(mLinearLayoutAddress, mAddressEditTexts, mAddressViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData());
 
                 }
+            } else if (type.equalsIgnoreCase("Note")) {
+                mNoteEDT.setText(lSecondaryContactsJDO.getData());
+            } else if (type.equalsIgnoreCase("Organization")) {
+                mOrgEDT.setText(lSecondaryContactsJDO.getData());
             }
         }
-
     }
-
 
     public void setOnClickListeners() {
 
@@ -164,15 +205,55 @@ public class EditContactActivity2 extends AppCompatActivity {
             }
         });
 
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveContacts();
+            }
+        });
+
     }
 
-    public void removeLastViewInPhone(ArrayList<View> pView, LinearLayout pLayout) {
+    private void saveContacts() {
 
-        pLayout.removeView(pView.get(pView.size() - 1));
-        pView.remove(pView.get(pView.size() - 1));
+        // Update the First table
+        PrimaryContactJDO lPrimaryContactJDO = new PrimaryContactJDO();
+        lPrimaryContactJDO.setId(mCurrentId);
+        lPrimaryContactJDO.setDisplayName(mNameEDT.getText().toString().trim());
+        lPrimaryContactJDO.setNote(mNoteEDT.getText().toString());
+        lPrimaryContactJDO.setOraganization(mOrgEDT.getText().toString());
+
+        ContactsTable table = new ContactsTable(this);
+        table.updateRow(lPrimaryContactJDO);
+
+        //Get all the second table data
+
+
+        Intent intent = new Intent();
+        intent.putExtra(getString(R.string.id_extra), mCurrentId);
+        setResult(1, intent);
+        finish();
 
     }
 
+    /**
+     * Removes the last View in the Layout and from the ArrayList
+     *
+     * @param pViews
+     * @param pLayout
+     */
+    public void removeLastViewInPhone(ArrayList<View> pViews, LinearLayout pLayout) {
+
+        //TODO: If needed delete the edit text this can be a your source of issue if you are using the arraylist of editTexts
+        pLayout.removeView(pViews.get(pViews.size() - 1));
+        pViews.remove(pViews.get(pViews.size() - 1));
+
+    }
+
+    /**
+     * Sets the last View in the group with a delete Button
+     * @param pViews the arrayList of view groups
+     */
     public void setLastViewWithDeleteButton(ArrayList<View> pViews) {
 
         for (View lView : pViews) {
@@ -213,5 +294,23 @@ public class EditContactActivity2 extends AppCompatActivity {
         setLastViewWithDeleteButton(pViews);
 
         pLinearLayout.addView(lView);
+    }
+
+    public class EditTextAndIdJDO{
+        EditText mEditText;
+        String mId;
+
+        public EditTextAndIdJDO(EditText mEditText, String mId) {
+            this.mEditText = mEditText;
+            this.mId = mId;
+        }
+
+        public EditText getmEditText() {
+            return mEditText;
+        }
+
+        public String getmId() {
+            return mId;
+        }
     }
 }

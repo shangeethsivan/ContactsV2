@@ -47,9 +47,9 @@ public class HomeActivity extends AppCompatActivity {
         setOnClickListeners();
 
         mSharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
-        boolean areContactsLoaded = mSharedPreferences.getBoolean(getString(R.string.are_contacts_loaded), false);
+        boolean lAreContactsLoaded = mSharedPreferences.getBoolean(getString(R.string.are_contacts_loaded), false);
 
-        if (areContactsLoaded) {
+        if (lAreContactsLoaded) {
 
             loadContacts();
 
@@ -62,26 +62,28 @@ public class HomeActivity extends AppCompatActivity {
         maddContactFab = (FloatingActionButton) findViewById(R.id.add_contact_fab);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_home);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(),layoutManager.getOrientation()));
+
+        LinearLayoutManager lLayoutManager = new LinearLayoutManager(this);
+
+        mRecyclerView.setLayoutManager(lLayoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), lLayoutManager.getOrientation()));
 
         mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 
-                startActivityForResult(new Intent(HomeActivity.this, DetailActivity.class).putExtra(getString(R.string.id_extra), mContactListJDO.get(position).getId()),0);
+                startActivityForResult(new Intent(HomeActivity.this, DetailActivity.class).putExtra(getString(R.string.id_extra), mContactListJDO.get(position).getId()), 0);
 
             }
         }));
     }
 
-    public void setOnClickListeners(){
+    public void setOnClickListeners() {
 
         maddContactFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(mRecyclerView,"Add Contact",Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(mRecyclerView, "Add Contact", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -90,12 +92,12 @@ public class HomeActivity extends AppCompatActivity {
 
     public void loadContacts() {
 
-        ContactsTable table = new ContactsTable(this);
+        ContactsTable lTable = new ContactsTable(this);
 
-        mContactListJDO = table.getContactsForList();
+        mContactListJDO = lTable.getContactsForList();
         mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this, mContactListJDO);
 
-       mRecyclerView.setAdapter(mRecyclerViewAdapter);
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
     }
 
@@ -123,22 +125,22 @@ public class HomeActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, 0);
 
         } else {
-            LoadContactsInBackground loadContactsInBackground = new LoadContactsInBackground();
-            loadContactsInBackground.execute();
+            LoadContactsInBackground lLoadContactsInBackground = new LoadContactsInBackground();
+            lLoadContactsInBackground.execute();
         }
     }
 
     public class LoadContactsInBackground extends AsyncTask<Void, Void, Void> {
 
-        ProgressDialog progressDialog;
+        ProgressDialog mProgressDialog;
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(HomeActivity.this);
-            progressDialog.setTitle("Please Wait");
-            progressDialog.setMessage("Loading Contacts");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
+            mProgressDialog = new ProgressDialog(HomeActivity.this);
+            mProgressDialog.setTitle("Please Wait");
+            mProgressDialog.setMessage("Loading Contacts");
+            mProgressDialog.setCancelable(false);
+            mProgressDialog.show();
         }
 
         @Override
@@ -160,19 +162,21 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             loadContacts();
-            progressDialog.dismiss();
+            mProgressDialog.dismiss();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == 0){
-            if(data!=null && data.getBooleanExtra(getString(R.string.is_data_updated),false)){
+
+        if (resultCode == 0) {
+
+            if (data != null && data.getBooleanExtra(getString(R.string.is_data_updated), false)) {
 
                 mContactListJDO.clear();
 
                 loadContacts();
-                mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this,mContactListJDO);
+                mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this, mContactListJDO);
                 mRecyclerView.setAdapter(mRecyclerViewAdapter);
             }
         }

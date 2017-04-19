@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.shangeeth.contactsclonev2.EditContactActivity;
+import com.shangeeth.contactsclonev2.EditContactActivity2;
 import com.shangeeth.contactsclonev2.R;
 import com.shangeeth.contactsclonev2.adapters.DetailActivityCustomRecylerViewAdapter;
 import com.shangeeth.contactsclonev2.db.ContactsDataTable;
@@ -82,18 +83,18 @@ public class DetailActivity extends AppCompatActivity {
 
         mContactsDataJDOs = lDataTable.getDatasForId(mCurrentId);
 
-        SecondaryContactsJDO noteJDO = new SecondaryContactsJDO();
-        noteJDO.setContactId(mCurrentId);
-        noteJDO.setData(mContactsJDO.getNote());
-        noteJDO.setType("Note");
-        mContactsDataJDOs.add(noteJDO);
+        SecondaryContactsJDO lNoteJDO = new SecondaryContactsJDO();
+        lNoteJDO.setContactId(mCurrentId);
+        lNoteJDO.setData(mContactsJDO.getNote());
+        lNoteJDO.setType("Note");
+        mContactsDataJDOs.add(lNoteJDO);
 
-        SecondaryContactsJDO organizationJDO = new SecondaryContactsJDO();
-        organizationJDO.setContactId(mCurrentId);
-        organizationJDO.setData(mContactsJDO.getOraganization());
-        organizationJDO.setType("Organization");
+        SecondaryContactsJDO lOrganizationJDO = new SecondaryContactsJDO();
+        lOrganizationJDO.setContactId(mCurrentId);
+        lOrganizationJDO.setData(mContactsJDO.getOraganization());
+        lOrganizationJDO.setType("Organization");
 
-        mContactsDataJDOs.add(organizationJDO);
+        mContactsDataJDOs.add(lOrganizationJDO);
 
 
         /*
@@ -150,9 +151,8 @@ public class DetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.edit_contact:
-                Snackbar.make(mRecyclerView, "Edit Clicked", Snackbar.LENGTH_SHORT).show();
 
-                Intent lIntent = new Intent(this, EditContactActivity.class);
+                Intent lIntent = new Intent(this, EditContactActivity2.class);
                 lIntent.putExtra(getString(R.string.contact_data_jdos), mContactsDataJDOs);
                 lIntent.putExtra(getString(R.string.name),mContactsJDO.getDisplayName());
                 lIntent.putExtra(getString(R.string.id_extra), mCurrentId);
