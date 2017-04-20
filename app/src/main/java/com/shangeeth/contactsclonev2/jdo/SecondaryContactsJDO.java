@@ -2,7 +2,7 @@ package com.shangeeth.contactsclonev2.jdo;
 
 import android.support.annotation.NonNull;
 
-import com.shangeeth.contactsclonev2.util.Util;
+import com.shangeeth.contactsclonev2.util.CommonUtil;
 
 import java.io.Serializable;
 
@@ -52,7 +52,7 @@ public class SecondaryContactsJDO implements Serializable,Comparable<SecondaryCo
     @Override
     public int compareTo(@NonNull SecondaryContactsJDO contactsJDO) {
 
-        return Util.getTypeOrderIndex(getType())-Util.getTypeOrderIndex(contactsJDO.getType());
+        return CommonUtil.getTypeOrderIndex(getType())- CommonUtil.getTypeOrderIndex(contactsJDO.getType());
 
     }
 }

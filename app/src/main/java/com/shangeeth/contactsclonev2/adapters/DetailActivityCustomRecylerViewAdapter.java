@@ -53,7 +53,7 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
 
         String lData = mContactsJDOs.get(position).getData();
 
-        if (lData != null && !lData.equals("")) {
+        if (lData != null ) {
 
              /*
                 Displaying buttons based on the type
@@ -123,9 +123,6 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
             holder.mDataTV.setText(lData);
 
         }
-        else {
-            holder.mLinearLayout.setVisibility(View.GONE);
-        }
     }
 
 
@@ -134,7 +131,7 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
         return mContactsJDOs.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         LinearLayout mLinearLayout;
         TextView mTypeTV;
@@ -155,36 +152,7 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
             mEmailIV = (ImageView) itemView.findViewById(R.id.email_iv);
             mWebsiteIV = (ImageView) itemView.findViewById(R.id.website_iv);
 
-            mCallIV.setOnClickListener(this);
-            mMessageIV.setOnClickListener(this);
-            mEmailIV.setOnClickListener(this);
-            mWebsiteIV.setOnClickListener(this);
         }
 
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.call_iv:
-                    Intent lCallIntent = new Intent(Intent.ACTION_CALL).setData(Uri.parse("tel:" + mDataTV.getText().toString()));
-                    v.getContext().startActivity(lCallIntent);
-                    break;
-                case R.id.message_iv:
-                    Intent lMessageIntent = new Intent(Intent.ACTION_SENDTO).setData(Uri.parse("smsto:" + mDataTV.getText().toString()));
-                    v.getContext().startActivity(lMessageIntent);
-                    break;
-                case R.id.email_iv:
-                    Intent lEmailIntent = new Intent(Intent.ACTION_SENDTO).setData(Uri.parse("mailto:" + mDataTV.getText().toString()));
-                    v.getContext().startActivity(lEmailIntent);
-                    break;
-                case R.id.website_iv:
-                    String lData = mDataTV.getText().toString();
-                    if (!lData.contains("http://")) {
-                        lData = "http://" + lData;
-                    }
-                    Intent lWebsiteIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(lData));
-                    v.getContext().startActivity(lWebsiteIntent);
-                    break;
-            }
-        }
     }
 }

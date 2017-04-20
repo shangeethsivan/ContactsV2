@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -20,7 +21,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.shangeeth.contactsclonev2.R;
 import com.shangeeth.contactsclonev2.adapters.DetailActivityCustomRecylerViewAdapter;
@@ -50,7 +55,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        Log.e(DetailActivity.class.getSimpleName(), "onCreate: created" );
+        Log.e(DetailActivity.class.getSimpleName(), "onCreate: created");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
@@ -60,14 +65,14 @@ public class DetailActivity extends AppCompatActivity {
 
         ensurePermissions();
 
-
     }
+
 
     private void ensurePermissions() {
 
-        if(ContextCompat.checkSelfPermission(this,Manifest.permission.CALL_PHONE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.CALL_PHONE},0);
-        }else {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE}, 0);
+        } else {
             loadDataFromTable();
         }
 
@@ -79,25 +84,30 @@ public class DetailActivity extends AppCompatActivity {
 
         ContactsDataTable lDataTable = new ContactsDataTable(this);
 
-        mContactsDataJDOs = lDataTable.getDatasForId(mCurrentId);
+        mContactsDataJDOs = lDataTable.getDataForId(mCurrentId);
 
         SecondaryContactsJDO lNoteJDO = new SecondaryContactsJDO();
         lNoteJDO.setContactId(mCurrentId);
         lNoteJDO.setData(mContactsJDO.getNote());
         lNoteJDO.setType("Note");
-        mContactsDataJDOs.add(lNoteJDO);
+        if (!mContactsJDO.getNote().trim().equals("")) {
+            mContactsDataJDOs.add(lNoteJDO);
+        }
 
         SecondaryContactsJDO lOrganizationJDO = new SecondaryContactsJDO();
         lOrganizationJDO.setContactId(mCurrentId);
         lOrganizationJDO.setData(mContactsJDO.getOraganization());
         lOrganizationJDO.setType("Organization");
 
+        if (!mContactsJDO.getOraganization().trim().equals("")) {
         mContactsDataJDOs.add(lOrganizationJDO);
+        }
 
 
         /*
         Loading data for title and image
          */
+
         mToolbarLayout.setTitle(mContactsJDO.getDisplayName());
         Picasso.with(this)
                 .load(mContactsJDO.getPhotoUri())
@@ -142,7 +152,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        setResult(0,new Intent().putExtra(getString(R.string.is_data_updated),mUpdated));
+        setResult(0, new Intent().putExtra(getString(R.string.is_data_updated), mUpdated));
         finish();
     }
 
@@ -153,15 +163,15 @@ public class DetailActivity extends AppCompatActivity {
 
                 Intent lIntent = new Intent(this, AddOrEditActivity.class);
                 lIntent.putExtra(getString(R.string.contact_data_jdos), mContactsDataJDOs);
-                lIntent.putExtra(getString(R.string.name),mContactsJDO.getDisplayName());
+                lIntent.putExtra(getString(R.string.name), mContactsJDO.getDisplayName());
                 lIntent.putExtra(getString(R.string.id_extra), mCurrentId);
-                lIntent.putExtra(getString(R.string.request_code),REQUEST_CODE);
+                lIntent.putExtra(getString(R.string.request_code), REQUEST_CODE);
 
-                startActivityForResult(lIntent,REQUEST_CODE);
+                startActivityForResult(lIntent, REQUEST_CODE);
 
                 break;
             case android.R.id.home:
-                setResult(0,new Intent().putExtra(getString(R.string.is_data_updated),mUpdated));
+                setResult(0, new Intent().putExtra(getString(R.string.is_data_updated), mUpdated));
                 finish();
                 break;
             case R.id.delete_contact:
@@ -199,9 +209,9 @@ public class DetailActivity extends AppCompatActivity {
 
 
         Intent lIntent = new Intent();
-        lIntent.putExtra(getString(R.string.is_data_updated),true);
-        lIntent.putExtra(getString(R.string.contact_deleted),true);
-        setResult(0,lIntent);
+        lIntent.putExtra(getString(R.string.is_data_updated), true);
+        lIntent.putExtra(getString(R.string.contact_deleted), true);
+        setResult(0, lIntent);
         finish();
 
     }
@@ -210,29 +220,59 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode == REQUEST_CODE && resultCode == 1){
+        if (requestCode == REQUEST_CODE && resultCode == 1) {
 
             mUpdated = true;
             loadDataFromTable();
 
-            mCustomAdapter = new DetailActivityCustomRecylerViewAdapter(this,mContactsDataJDOs);
+            mCustomAdapter = new DetailActivityCustomRecylerViewAdapter(this, mContactsDataJDOs);
             mRecyclerView.setAdapter(mCustomAdapter);
 
-            Snackbar.make((CoordinatorLayout)findViewById(R.id.coordinator_layout),"Contact Updated Successfully",Snackbar.LENGTH_SHORT).show();
+            Snackbar.make((CoordinatorLayout) findViewById(R.id.coordinator_layout), "Contact Updated Successfully", Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+
+    public void handleButtonAction(View v) {
+
+        View view = (View) v.getParent();
+        TextView lDataTV = (TextView) view.findViewById(R.id.data_tv);
+        switch (v.getId()) {
+            case R.id.call_iv:
+                Intent lCallIntent = new Intent(Intent.ACTION_CALL).setData(Uri.parse("tel:" + lDataTV.getText().toString()));
+                v.getContext().startActivity(lCallIntent);
+                break;
+            case R.id.message_iv:
+                Intent lMessageIntent = new Intent(Intent.ACTION_SENDTO).setData(Uri.parse("smsto:" + lDataTV.getText().toString()));
+                v.getContext().startActivity(lMessageIntent);
+                break;
+            case R.id.email_iv:
+                Intent lEmailIntent = new Intent(Intent.ACTION_SENDTO).setData(Uri.parse("mailto:" + lDataTV.getText().toString()));
+                v.getContext().startActivity(lEmailIntent);
+                break;
+            case R.id.website_iv:
+                String lData = lDataTV.getText().toString();
+                if (!lData.contains("http://")) {
+                    lData = "http://" + lData;
+                }
+                Intent lWebsiteIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(lData));
+                v.getContext().startActivity(lWebsiteIntent);
+                break;
+        }
+
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == 0 ){
+        if (requestCode == 0) {
             boolean lArePermissionsGranted = true;
 
-            for(int lResult:grantResults){
-                if(lResult== PackageManager.PERMISSION_DENIED){
+            for (int lResult : grantResults) {
+                if (lResult == PackageManager.PERMISSION_DENIED) {
                     lArePermissionsGranted = false;
                 }
             }
-            if(lArePermissionsGranted){
+            if (lArePermissionsGranted) {
                 loadDataFromTable();
             }
         }

@@ -39,11 +39,11 @@ public class ContactsDataTable {
         }
     }
 
-    public void createTable(SQLiteDatabase db) {
+    public static void createTable(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CONTACT_ID + " INT," + TYPE + " TEXT," + DATA + " TEXT)");
     }
 
-    public void dropTable(SQLiteDatabase db) {
+    public static void dropTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     }
 
@@ -104,7 +104,7 @@ public class ContactsDataTable {
     }
 
 
-    public ArrayList<SecondaryContactsJDO> getDatasForId(String id) {
+    public ArrayList<SecondaryContactsJDO> getDataForId(String id) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
 

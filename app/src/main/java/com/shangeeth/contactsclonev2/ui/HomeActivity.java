@@ -24,7 +24,7 @@ import com.shangeeth.contactsclonev2.adapters.HomeActivityCustomRecyclerViewAdap
 import com.shangeeth.contactsclonev2.db.ContactsTable;
 import com.shangeeth.contactsclonev2.helper.LoadContactsFromContentProvider;
 import com.shangeeth.contactsclonev2.jdo.PrimaryContactJDO;
-import com.shangeeth.contactsclonev2.util.RecyclerItemClickListener;
+import com.shangeeth.contactsclonev2.listeners.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 
@@ -150,8 +150,8 @@ public class HomeActivity extends AppCompatActivity {
 
             //Store contacts in sqlite from content provider
             LoadContactsFromContentProvider loadContactsFromContentProvider = new LoadContactsFromContentProvider();
-            loadContactsFromContentProvider.loadContacts(HomeActivity.this);
-            loadContactsFromContentProvider.loadDataForSecondaryTable(HomeActivity.this);
+            loadContactsFromContentProvider.loadContactsTable(HomeActivity.this);
+            loadContactsFromContentProvider.loadContactsDataTable(HomeActivity.this);
 
             //Writing boolean areContactsLoaded to shared preference
             SharedPreferences.Editor lEditor = mSharedPreferences.edit();

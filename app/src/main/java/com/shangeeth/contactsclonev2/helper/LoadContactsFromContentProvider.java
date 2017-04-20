@@ -3,10 +3,8 @@ package com.shangeeth.contactsclonev2.helper;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.provider.ContactsContract;
 
-import com.shangeeth.contactsclonev2.db.ContactsDBHelper;
 import com.shangeeth.contactsclonev2.db.ContactsDataTable;
 import com.shangeeth.contactsclonev2.db.ContactsTable;
 import com.shangeeth.contactsclonev2.jdo.PrimaryContactJDO;
@@ -26,7 +24,7 @@ public class LoadContactsFromContentProvider {
 
     private String TAG = LoadContactsFromContentProvider.class.getSimpleName();
 
-    public void loadContacts(Context context) {
+    public void loadContactsTable(Context context) {
 
         ArrayList<PrimaryContactJDO> primaryContactJDOs = new ArrayList<>();
 
@@ -81,7 +79,7 @@ public class LoadContactsFromContentProvider {
 
 
             ContactsTable table = new ContactsTable(context);
-            table.insertDatas(primaryContactJDOs);
+            table.insertData(primaryContactJDOs);
 
 
 
@@ -89,7 +87,7 @@ public class LoadContactsFromContentProvider {
 
     }
 
-    public void loadDataForSecondaryTable(Context pContext){
+    public void loadContactsDataTable(Context pContext){
 
         ContentResolver lContentResolver = pContext.getContentResolver();
 

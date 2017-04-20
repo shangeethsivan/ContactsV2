@@ -1,4 +1,4 @@
-package com.shangeeth.contactsclonev2.util;
+package com.shangeeth.contactsclonev2.listeners;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

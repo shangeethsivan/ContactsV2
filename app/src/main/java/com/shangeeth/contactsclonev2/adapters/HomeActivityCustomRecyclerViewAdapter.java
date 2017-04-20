@@ -63,7 +63,6 @@ public class HomeActivityCustomRecyclerViewAdapter extends RecyclerView.Adapter<
         ImageView mContactImageTV;
 
         public ViewHolder(View itemView) {
-
             super(itemView);
 
             mContactNameTV = (TextView) itemView.findViewById(R.id.contact_name);

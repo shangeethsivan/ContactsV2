@@ -36,12 +36,12 @@ public class ContactsTable {
             PHOTO_URI + " TEXT," + NOTE + " TEXT," + ORGANIZATION + " TEXT)";
 
 
-    public void createTable(SQLiteDatabase db) {
+    public static void createTable(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
 
-    public void dropTable(SQLiteDatabase db) {
+    public static void dropTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     }
 
@@ -111,7 +111,7 @@ public class ContactsTable {
         lSqLiteDatabase.close();
     }
 
-    public void insertDatas(ArrayList<PrimaryContactJDO> pContactJDOs) {
+    public void insertData(ArrayList<PrimaryContactJDO> pContactJDOs) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
 
