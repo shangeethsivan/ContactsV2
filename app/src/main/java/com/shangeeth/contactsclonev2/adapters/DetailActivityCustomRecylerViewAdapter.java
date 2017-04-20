@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.shangeeth.contactsclonev2.R;
@@ -122,6 +123,9 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
             holder.mDataTV.setText(lData);
 
         }
+        else {
+            holder.mLinearLayout.setVisibility(View.GONE);
+        }
     }
 
 
@@ -132,6 +136,7 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        LinearLayout mLinearLayout;
         TextView mTypeTV;
         TextView mDataTV;
         ImageView mCallIV;
@@ -142,7 +147,7 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
         public ViewHolder(View itemView) {
 
             super(itemView);
-
+            mLinearLayout = (LinearLayout) itemView.findViewById(R.id.container_layout);
             mTypeTV = (TextView) itemView.findViewById(R.id.type_tv);
             mDataTV = (TextView) itemView.findViewById(R.id.data_tv);
             mCallIV = (ImageView) itemView.findViewById(R.id.call_iv);
