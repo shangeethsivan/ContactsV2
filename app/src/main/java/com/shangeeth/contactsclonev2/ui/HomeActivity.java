@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +18,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.shangeeth.contactsclonev2.AddOrEditActivity;
 import com.shangeeth.contactsclonev2.R;
 import com.shangeeth.contactsclonev2.adapters.HomeActivityCustomRecyclerViewAdapter;
 import com.shangeeth.contactsclonev2.db.ContactsTable;
@@ -36,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     HomeActivityCustomRecyclerViewAdapter mRecyclerViewAdapter;
     private ArrayList<PrimaryContactJDO> mContactListJDO;
     private FloatingActionButton maddContactFab;
+    public static final int REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +84,8 @@ public class HomeActivity extends AppCompatActivity {
         maddContactFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(mRecyclerView, "Add Contact", Snackbar.LENGTH_SHORT).show();
+                startActivityForResult(new Intent(HomeActivity.this, AddOrEditActivity.class)
+                        .putExtra(getString(R.string.request_code),REQUEST_CODE),REQUEST_CODE);
             }
         });
 

@@ -31,7 +31,7 @@ public class ContactsTable {
     public static final String ORGANIZATION = "organization";
 
     public static final String SQL_CREATE_ENTRIES = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" +
-            _ID + " INT PRIMARY KEY, " +
+            _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             DISPLAY_NAME + " TEXT," + PHONETIC_NAME + " TEXT," + ACCOUNT_TYPE + " TEXT," +
             PHOTO_URI + " TEXT," + NOTE + " TEXT," + ORGANIZATION + " TEXT)";
 
@@ -159,6 +159,23 @@ public class ContactsTable {
         lSqLiteDatabase.update(TABLE_NAME,values,_ID+"=?",new String[]{pJDO.getId()});
 
     }
+
+    public int insertNewRow(PrimaryContactJDO pJDO){
+
+        SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(DISPLAY_NAME, pJDO.getDisplayName());
+        values.put(NOTE, pJDO.getNote());
+        values.put(ORGANIZATION, pJDO.getOraganization());
+
+        long lId = lSqLiteDatabase.insert(TABLE_NAME,null,values);
+
+        return (int) lId;
+
+    }
+
+
 
 
 }

@@ -20,8 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.shangeeth.contactsclonev2.EditContactActivity;
-import com.shangeeth.contactsclonev2.EditContactActivity2;
+import com.shangeeth.contactsclonev2.AddOrEditActivity;
 import com.shangeeth.contactsclonev2.R;
 import com.shangeeth.contactsclonev2.adapters.DetailActivityCustomRecylerViewAdapter;
 import com.shangeeth.contactsclonev2.db.ContactsDataTable;
@@ -31,7 +30,6 @@ import com.shangeeth.contactsclonev2.jdo.SecondaryContactsJDO;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 public class DetailActivity extends AppCompatActivity {
@@ -44,9 +42,9 @@ public class DetailActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ArrayList<SecondaryContactsJDO> mContactsDataJDOs;
     private String mCurrentId;
-    private int REQUEST_CODE = 100;
     private boolean mUpdated = false;
     private DetailActivityCustomRecylerViewAdapter mCustomAdapter;
+    private int REQUEST_CODE = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,10 +150,11 @@ public class DetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.edit_contact:
 
-                Intent lIntent = new Intent(this, EditContactActivity2.class);
+                Intent lIntent = new Intent(this, AddOrEditActivity.class);
                 lIntent.putExtra(getString(R.string.contact_data_jdos), mContactsDataJDOs);
                 lIntent.putExtra(getString(R.string.name),mContactsJDO.getDisplayName());
                 lIntent.putExtra(getString(R.string.id_extra), mCurrentId);
+                lIntent.putExtra(getString(R.string.request_code),REQUEST_CODE);
 
                 startActivityForResult(lIntent,REQUEST_CODE);
 

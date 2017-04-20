@@ -24,7 +24,7 @@
             android:name=".ui.DetailActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".EditContactActivity" />
-        <activity android:name=".EditContactActivity2">
+        <activity android:name=".AddOrEditActivity">
 
 
         </activity>
