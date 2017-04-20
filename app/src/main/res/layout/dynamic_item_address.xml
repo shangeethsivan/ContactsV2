@@ -14,26 +14,31 @@
         <EditText
             android:id="@+id/street_edt"
             android:hint="Street"
+            android:lines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/city_edt"
             android:hint="City"
+            android:lines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/state_edt"
+            android:lines="1"
             android:layout_width="match_parent"
             android:hint="State"
             android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/zipcode_edt"
+            android:lines="1"
             android:hint="ZipCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/country_edt"
             android:hint="Country"
+            android:lines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

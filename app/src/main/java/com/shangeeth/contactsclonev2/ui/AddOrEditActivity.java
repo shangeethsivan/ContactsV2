@@ -191,15 +191,15 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     public void loadEmptyFields() {
 
-        addView(mLinearLayoutPhone, mPhoneEditTextJDO, mPhoneViews, InputType.TYPE_CLASS_PHONE, "", "-1", ContactsDataTable.Type.PHONE);
+        addView(mLinearLayoutPhone, mPhoneEditTextJDO, mPhoneViews, InputType.TYPE_CLASS_PHONE, "", "newData", ContactsDataTable.Type.PHONE);
 
-        addView(mLinearLayoutEmail, mEmailEditTextAndIdJDOs, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "-1", ContactsDataTable.Type.EMAIL);
+        addView(mLinearLayoutEmail, mEmailEditTextAndIdJDOs, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "newData", ContactsDataTable.Type.EMAIL);
 
-        addView(mLinearLayoutWebsite, mWebsiteEditTextAndIdJDOs, mWebsiteViews, InputType.TYPE_CLASS_TEXT, "", "-1", ContactsDataTable.Type.WEBSITE);
+        addView(mLinearLayoutWebsite, mWebsiteEditTextAndIdJDOs, mWebsiteViews, InputType.TYPE_CLASS_TEXT, "", "newData", ContactsDataTable.Type.WEBSITE);
 
-        addView(mLinearLayoutIM, mImEditTextAndIdJDOs, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "-1", ContactsDataTable.Type.IM);
+        addView(mLinearLayoutIM, mImEditTextAndIdJDOs, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "newData", ContactsDataTable.Type.IM);
 
-        addView(mLinearLayoutAddress, null, mAddressViews, InputType.TYPE_CLASS_TEXT, "", "-1", ContactsDataTable.Type.ADDRESS);
+        addView(mLinearLayoutAddress, null, mAddressViews, InputType.TYPE_CLASS_TEXT, "", "newData", ContactsDataTable.Type.ADDRESS);
 
     }
 
@@ -209,7 +209,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addView(mLinearLayoutPhone, mPhoneEditTextJDO, mPhoneViews, InputType.TYPE_CLASS_PHONE, "", "-1", ContactsDataTable.Type.PHONE);
+                addView(mLinearLayoutPhone, mPhoneEditTextJDO, mPhoneViews, InputType.TYPE_CLASS_PHONE, "", "newData", ContactsDataTable.Type.PHONE);
 
             }
         });
@@ -217,7 +217,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addView(mLinearLayoutEmail, mEmailEditTextAndIdJDOs, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "-1", ContactsDataTable.Type.EMAIL);
+                addView(mLinearLayoutEmail, mEmailEditTextAndIdJDOs, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "newData", ContactsDataTable.Type.EMAIL);
 
             }
         });
@@ -226,7 +226,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             public void onClick(View v) {
 
 
-                addView(mLinearLayoutWebsite, mWebsiteEditTextAndIdJDOs, mWebsiteViews, InputType.TYPE_CLASS_TEXT, "", "-1", ContactsDataTable.Type.WEBSITE);
+                addView(mLinearLayoutWebsite, mWebsiteEditTextAndIdJDOs, mWebsiteViews, InputType.TYPE_CLASS_TEXT, "", "newData", ContactsDataTable.Type.WEBSITE);
 
 
             }
@@ -235,7 +235,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addView(mLinearLayoutIM, mImEditTextAndIdJDOs, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "-1", ContactsDataTable.Type.IM);
+                addView(mLinearLayoutIM, mImEditTextAndIdJDOs, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, "", "newData", ContactsDataTable.Type.IM);
 
 
             }
@@ -244,7 +244,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                addView(mLinearLayoutAddress, null, mAddressViews, InputType.TYPE_CLASS_TEXT, "", "-1", ContactsDataTable.Type.ADDRESS);
+                addView(mLinearLayoutAddress, null, mAddressViews, InputType.TYPE_CLASS_TEXT, "", "newData", ContactsDataTable.Type.ADDRESS);
 
             }
         });

@@ -168,7 +168,7 @@ public class ContactsDataTable {
             for (SecondaryContactsJDO lSecondaryContactsJDO : pSecondaryContactsJDOs) {
 
                 ContentValues lContentValues = new ContentValues();
-                if (!lSecondaryContactsJDO.getId().equals("-1")) {
+                if (!lSecondaryContactsJDO.getId().equals("newData")) {
                     lContentValues.put(DATA, lSecondaryContactsJDO.getData());
                     lSqLiteDatabase.update(TABLE_NAME, lContentValues, _ID + "=?", new String[]{lSecondaryContactsJDO.getId()});
                 } else {
@@ -177,6 +177,7 @@ public class ContactsDataTable {
                     lContentValues.put(DATA, lSecondaryContactsJDO.getData());
                     lSqLiteDatabase.insert(TABLE_NAME, null, lContentValues);
                 }
+// Could also Use insertwithConflict ...
             }
 
             lSqLiteDatabase.setTransactionSuccessful();
