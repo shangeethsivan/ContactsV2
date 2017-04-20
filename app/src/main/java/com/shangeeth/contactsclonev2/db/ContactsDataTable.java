@@ -147,6 +147,17 @@ public class ContactsDataTable {
             lSqLiteDatabase.endTransaction();
         }
     }
+
+    public void deleteDataForContactId(String pContactId) {
+
+        SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
+
+        lSqLiteDatabase.delete(TABLE_NAME, CONTACT_ID + "=?", new String[]{pContactId});
+
+        lSqLiteDatabase.close();
+
+    }
+
     public void insertOrUpdateData(ArrayList<SecondaryContactsJDO> pSecondaryContactsJDOs) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
@@ -154,17 +165,17 @@ public class ContactsDataTable {
         try {
             lSqLiteDatabase.beginTransaction();
 
-            for(SecondaryContactsJDO lSecondaryContactsJDO:pSecondaryContactsJDOs){
+            for (SecondaryContactsJDO lSecondaryContactsJDO : pSecondaryContactsJDOs) {
 
                 ContentValues lContentValues = new ContentValues();
-                if(!lSecondaryContactsJDO.getId().equals("-1")){
-                    lContentValues.put(DATA,lSecondaryContactsJDO.getData());
-                    lSqLiteDatabase.update(TABLE_NAME,lContentValues,_ID+"=?",new String[]{lSecondaryContactsJDO.getId()});
-                }else {
-                    lContentValues.put(CONTACT_ID,lSecondaryContactsJDO.getContactId());
-                    lContentValues.put(TYPE,lSecondaryContactsJDO.getType());
-                    lContentValues.put(DATA,lSecondaryContactsJDO.getData());
-                    lSqLiteDatabase.insert(TABLE_NAME,null,lContentValues);
+                if (!lSecondaryContactsJDO.getId().equals("-1")) {
+                    lContentValues.put(DATA, lSecondaryContactsJDO.getData());
+                    lSqLiteDatabase.update(TABLE_NAME, lContentValues, _ID + "=?", new String[]{lSecondaryContactsJDO.getId()});
+                } else {
+                    lContentValues.put(CONTACT_ID, lSecondaryContactsJDO.getContactId());
+                    lContentValues.put(TYPE, lSecondaryContactsJDO.getType());
+                    lContentValues.put(DATA, lSecondaryContactsJDO.getData());
+                    lSqLiteDatabase.insert(TABLE_NAME, null, lContentValues);
                 }
             }
 

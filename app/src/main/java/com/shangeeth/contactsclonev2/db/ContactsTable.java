@@ -102,6 +102,14 @@ public class ContactsTable {
         return lContactJDOArrayList;
     }
 
+    public void deleteContact(String pId){
+
+        SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
+
+        lSqLiteDatabase.delete(TABLE_NAME,_ID+"=?",new String[]{pId});
+
+        lSqLiteDatabase.close();
+    }
 
     public void insertDatas(ArrayList<PrimaryContactJDO> pContactJDOs) {
 

@@ -278,6 +278,7 @@ public class AddOrEditActivity extends AppCompatActivity {
 
 
             //Delete if there is any id to be deleted
+            //Delete if there is any id to be deleted
 
             if (mIdsTobeDeleted.size() > 0) {
                 lDataTable.deleteDataForIds(mIdsTobeDeleted);
@@ -366,7 +367,7 @@ public class AddOrEditActivity extends AppCompatActivity {
 
                 Intent lIntent = new Intent();
                 lIntent.putExtra(getString(R.string.is_data_updated), true);
-                lIntent.putExtra(getString(R.string.data_updated), true);
+                lIntent.putExtra(getString(R.string.contact_added), true);
                 setResult(0, lIntent);
                 finish();
 
@@ -393,6 +394,7 @@ public class AddOrEditActivity extends AppCompatActivity {
         EditText lEditText = (EditText) lView.findViewById(R.id.data_edt);
         lEditText.setText(pData);
         lEditText.setInputType(pInputType);
+        lEditText.requestFocus();
 
         pEditTextAndIdJDOs.add(new EditTextAndIdJDO(lEditText, pId));
 

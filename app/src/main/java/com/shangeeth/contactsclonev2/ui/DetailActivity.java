@@ -1,6 +1,7 @@
 package com.shangeeth.contactsclonev2.ui;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -162,9 +164,48 @@ public class DetailActivity extends AppCompatActivity {
                 setResult(0,new Intent().putExtra(getString(R.string.is_data_updated),mUpdated));
                 finish();
                 break;
+            case R.id.delete_contact:
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Delete Contact");
+                builder.setMessage("Are you sure you want to delete this contact");
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //Delete Contact
+                        deleteContact();
+                    }
+                });
+                builder.show();
+                break;
         }
         return true;
     }
+
+
+    private void deleteContact() {
+
+        //Delete From table 2
+        ContactsDataTable contactsDataTable = new ContactsDataTable(this);
+        contactsDataTable.deleteDataForContactId(mCurrentId);
+        //Delete From table 1
+        ContactsTable contactsTable = new ContactsTable(this);
+        contactsTable.deleteContact(mCurrentId);
+
+
+        Intent lIntent = new Intent();
+        lIntent.putExtra(getString(R.string.is_data_updated),true);
+        lIntent.putExtra(getString(R.string.contact_deleted),true);
+        setResult(0,lIntent);
+        finish();
+
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -180,8 +180,11 @@ public class HomeActivity extends AppCompatActivity {
                 loadContacts();
                 mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this, mContactListJDO);
                 mRecyclerView.setAdapter(mRecyclerViewAdapter);
-                if(data.getBooleanExtra(getString(R.string.data_updated),false)){
+                if(data.getBooleanExtra(getString(R.string.contact_added),false)){
                     Snackbar.make(mRecyclerView,"Contact Added Successfully",Snackbar.LENGTH_SHORT).show();
+                }
+                if(data.getBooleanExtra(getString(R.string.contact_deleted),false)){
+                    Snackbar.make(mRecyclerView,"Contact Deleted Successfully",Snackbar.LENGTH_SHORT).show();
                 }
             }
         }

@@ -41,7 +41,6 @@
         android:background="@color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view_detail"
                 android:layout_marginTop="20dp"
