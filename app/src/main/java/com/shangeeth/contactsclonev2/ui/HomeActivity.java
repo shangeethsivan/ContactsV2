@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -180,6 +181,9 @@ public class HomeActivity extends AppCompatActivity {
                 loadContacts();
                 mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this, mContactListJDO);
                 mRecyclerView.setAdapter(mRecyclerViewAdapter);
+                if(data.getBooleanExtra(getString(R.string.data_updated),false)){
+                    Snackbar.make(mRecyclerView,"Contact Added Successfully",Snackbar.LENGTH_SHORT).show();
+                }
             }
         }
     }

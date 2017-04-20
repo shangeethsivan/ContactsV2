@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewParent;
 import android.widget.EditText;
@@ -78,6 +79,7 @@ public class AddOrEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_contact2);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
 
@@ -357,12 +359,15 @@ public class AddOrEditActivity extends AppCompatActivity {
 
             } else {
 
-                setResult(0, new Intent().putExtra(getString(R.string.is_data_updated), true));
+                Intent lIntent = new Intent();
+                lIntent.putExtra(getString(R.string.is_data_updated),true);
+                lIntent.putExtra(getString(R.string.data_updated),true);
+                setResult(0, lIntent);
                 finish();
 
             }
         } else {
-            Snackbar.make((LinearLayout) findViewById(R.id.container_layout), "Atleast enter name to save", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make((LinearLayout) findViewById(R.id.container_layout), "You have to enter name to save Contacts", Snackbar.LENGTH_SHORT).show();
         }
 
 
@@ -437,5 +442,15 @@ public class AddOrEditActivity extends AppCompatActivity {
         public String getmId() {
             return mId;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
     }
 }
