@@ -31,8 +31,8 @@ public class ContactsDataTable {
         public static final String IM = "im";
         public static final String ADDRESS = "address";
 
-        public static boolean checkType(String type) {
-            if (type.equals(PHONE) || type.equals(EMAIL) || type.equals(WEBSITE) || type.equals(IM) || type.equals(ADDRESS))
+        public static boolean checkType(String pType) {
+            if (pType.equals(PHONE) || pType.equals(EMAIL) || pType.equals(WEBSITE) || pType.equals(IM) || pType.equals(ADDRESS))
                 return true;
             else
                 return false;
@@ -52,12 +52,12 @@ public class ContactsDataTable {
 
         SQLiteDatabase lSqliteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(CONTACT_ID, pJDO.getContactId());
-        values.put(TYPE, pJDO.getType());
-        values.put(DATA, pJDO.getData());
+        ContentValues lValues = new ContentValues();
+        lValues.put(CONTACT_ID, pJDO.getContactId());
+        lValues.put(TYPE, pJDO.getType());
+        lValues.put(DATA, pJDO.getData());
 
-        lSqliteDatabase.insert(TABLE_NAME, null, values);
+        lSqliteDatabase.insert(TABLE_NAME, null, lValues);
         lSqliteDatabase.close();
     }
 
@@ -68,12 +68,12 @@ public class ContactsDataTable {
         lSqLiteDatabase.beginTransaction();
         try {
             for (SecondaryContactsJDO lContactJDO : pContactJDOs) {
-                ContentValues values = new ContentValues();
-                values.put(CONTACT_ID, lContactJDO.getContactId());
-                values.put(TYPE, lContactJDO.getType());
-                values.put(DATA, lContactJDO.getData());
+                ContentValues lValues = new ContentValues();
+                lValues.put(CONTACT_ID, lContactJDO.getContactId());
+                lValues.put(TYPE, lContactJDO.getType());
+                lValues.put(DATA, lContactJDO.getData());
 
-                lSqLiteDatabase.insert(TABLE_NAME, null, values);
+                lSqLiteDatabase.insert(TABLE_NAME, null, lValues);
             }
             lSqLiteDatabase.setTransactionSuccessful();
         } finally {
@@ -82,7 +82,6 @@ public class ContactsDataTable {
     }
 
     public void updateRows(ArrayList<SecondaryContactsJDO> pContactJDOs) {
-
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
 
@@ -109,26 +108,26 @@ public class ContactsDataTable {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
 
-        ArrayList<SecondaryContactsJDO> contactsPOJOs = new ArrayList<>();
+        ArrayList<SecondaryContactsJDO> lContactsJDOs = new ArrayList<>();
 
-        Cursor cursor = lSqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CONTACT_ID + "=" + id, null);
+        Cursor lCursor = lSqLiteDatabase.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + CONTACT_ID + "=" + id, null);
 
-        if (cursor.moveToFirst()) {
+        if (lCursor.moveToFirst()) {
             do {
-                SecondaryContactsJDO contactsPOJO = new SecondaryContactsJDO();
-                contactsPOJO.setContactId(cursor.getString(cursor.getColumnIndex(CONTACT_ID)));
-                contactsPOJO.setType(cursor.getString(cursor.getColumnIndex(TYPE)));
-                contactsPOJO.setData(cursor.getString(cursor.getColumnIndex(DATA)));
-                contactsPOJO.setId(cursor.getString(cursor.getColumnIndex(_ID)));
-                contactsPOJOs.add(contactsPOJO);
-            } while (cursor.moveToNext());
+                SecondaryContactsJDO lContactsJDO = new SecondaryContactsJDO();
+                lContactsJDO.setContactId(lCursor.getString(lCursor.getColumnIndex(CONTACT_ID)));
+                lContactsJDO.setType(lCursor.getString(lCursor.getColumnIndex(TYPE)));
+                lContactsJDO.setData(lCursor.getString(lCursor.getColumnIndex(DATA)));
+                lContactsJDO.setId(lCursor.getString(lCursor.getColumnIndex(_ID)));
+                lContactsJDOs.add(lContactsJDO);
+            } while (lCursor.moveToNext());
 
         }
 
-        cursor.close();
+        lCursor.close();
 
         lSqLiteDatabase.close();
-        return contactsPOJOs;
+        return lContactsJDOs;
     }
 
     public void deleteDataForIds(ArrayList<String> pIds) {

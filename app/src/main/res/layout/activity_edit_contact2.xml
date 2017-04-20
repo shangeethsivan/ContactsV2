@@ -14,7 +14,7 @@
             android:id="@+id/container_layout"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            tools:context="com.shangeeth.contactsclonev2.AddOrEditActivity">
+            tools:context="com.shangeeth.contactsclonev2.ui.AddOrEditActivity">
 
             <LinearLayout
                 android:layout_width="match_parent"

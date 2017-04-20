@@ -19,7 +19,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.shangeeth.contactsclonev2.AddOrEditActivity;
 import com.shangeeth.contactsclonev2.R;
 import com.shangeeth.contactsclonev2.adapters.HomeActivityCustomRecyclerViewAdapter;
 import com.shangeeth.contactsclonev2.db.ContactsTable;
@@ -49,8 +48,8 @@ public class HomeActivity extends AppCompatActivity {
         setOnClickListeners();
 
         mSharedPreferences = this.getPreferences(Context.MODE_PRIVATE);
-        boolean lAreContactsLoaded = mSharedPreferences.getBoolean(getString(R.string.are_contacts_loaded), false);
 
+        boolean lAreContactsLoaded = mSharedPreferences.getBoolean(getString(R.string.are_contacts_loaded), false);
         if (lAreContactsLoaded) {
 
             loadContacts();
@@ -155,9 +154,9 @@ public class HomeActivity extends AppCompatActivity {
             loadContactsFromContentProvider.loadDataForSecondaryTable(HomeActivity.this);
 
             //Writing boolean areContactsLoaded to shared preference
-            SharedPreferences.Editor editor = mSharedPreferences.edit();
-            editor.putBoolean(getString(R.string.are_contacts_loaded), true);
-            editor.apply();
+            SharedPreferences.Editor lEditor = mSharedPreferences.edit();
+            lEditor.putBoolean(getString(R.string.are_contacts_loaded), true);
+            lEditor.apply();
 
             return null;
         }

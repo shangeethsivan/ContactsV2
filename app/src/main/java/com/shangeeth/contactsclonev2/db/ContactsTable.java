@@ -78,28 +78,28 @@ public class ContactsTable {
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
 
 
-        ArrayList<PrimaryContactJDO> jdoArrayList = new ArrayList<>();
+        ArrayList<PrimaryContactJDO> lContactJDOArrayList = new ArrayList<>();
 
-        Cursor cursor = lSqLiteDatabase.query(TABLE_NAME, new String[]{_ID, DISPLAY_NAME, PHOTO_URI}, null, null, null, null, DISPLAY_NAME + " ASC");
+        Cursor lCursor = lSqLiteDatabase.query(TABLE_NAME, new String[]{_ID, DISPLAY_NAME, PHOTO_URI}, null, null, null, null, DISPLAY_NAME + " ASC");
 
-        if (cursor.moveToFirst()) {
+        if (lCursor.moveToFirst()) {
 
             do {
                 PrimaryContactJDO contactsJDO = new PrimaryContactJDO();
 
-                contactsJDO.setDisplayName(cursor.getString(cursor.getColumnIndex(DISPLAY_NAME)));
-                contactsJDO.setPhotoUri(cursor.getString(cursor.getColumnIndex(PHOTO_URI)));
-                contactsJDO.setId(cursor.getString(cursor.getColumnIndex(_ID)));
+                contactsJDO.setDisplayName(lCursor.getString(lCursor.getColumnIndex(DISPLAY_NAME)));
+                contactsJDO.setPhotoUri(lCursor.getString(lCursor.getColumnIndex(PHOTO_URI)));
+                contactsJDO.setId(lCursor.getString(lCursor.getColumnIndex(_ID)));
 
-                jdoArrayList.add(contactsJDO);
+                lContactJDOArrayList.add(contactsJDO);
 
-            } while (cursor.moveToNext());
+            } while (lCursor.moveToNext());
 
         }
 
-        cursor.close();
+        lCursor.close();
 
-        return jdoArrayList;
+        return lContactJDOArrayList;
     }
 
 
@@ -111,16 +111,16 @@ public class ContactsTable {
         try {
             for (PrimaryContactJDO lContactJDO : pContactJDOs) {
 
-                ContentValues values = new ContentValues();
-                values.put(_ID, lContactJDO.getId());
-                values.put(DISPLAY_NAME, lContactJDO.getDisplayName());
-                values.put(PHONETIC_NAME, lContactJDO.getPhoneticName());
-                values.put(PHOTO_URI, lContactJDO.getPhotoUri());
-                values.put(ACCOUNT_TYPE, lContactJDO.getAccountType());
-                values.put(NOTE, lContactJDO.getNote());
-                values.put(ORGANIZATION, lContactJDO.getOraganization());
+                ContentValues lValues = new ContentValues();
+                lValues.put(_ID, lContactJDO.getId());
+                lValues.put(DISPLAY_NAME, lContactJDO.getDisplayName());
+                lValues.put(PHONETIC_NAME, lContactJDO.getPhoneticName());
+                lValues.put(PHOTO_URI, lContactJDO.getPhotoUri());
+                lValues.put(ACCOUNT_TYPE, lContactJDO.getAccountType());
+                lValues.put(NOTE, lContactJDO.getNote());
+                lValues.put(ORGANIZATION, lContactJDO.getOraganization());
 
-                lSqLiteDatabase.insert(TABLE_NAME, null, values);
+                lSqLiteDatabase.insert(TABLE_NAME, null, lValues);
 
             }
             lSqLiteDatabase.setTransactionSuccessful();
@@ -151,12 +151,12 @@ public class ContactsTable {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(DISPLAY_NAME, pJDO.getDisplayName());
-        values.put(NOTE, pJDO.getNote());
-        values.put(ORGANIZATION, pJDO.getOraganization());
+        ContentValues lValues = new ContentValues();
+        lValues.put(DISPLAY_NAME, pJDO.getDisplayName());
+        lValues.put(NOTE, pJDO.getNote());
+        lValues.put(ORGANIZATION, pJDO.getOraganization());
 
-        lSqLiteDatabase.update(TABLE_NAME,values,_ID+"=?",new String[]{pJDO.getId()});
+        lSqLiteDatabase.update(TABLE_NAME,lValues,_ID+"=?",new String[]{pJDO.getId()});
 
     }
 
@@ -164,12 +164,12 @@ public class ContactsTable {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(DISPLAY_NAME, pJDO.getDisplayName());
-        values.put(NOTE, pJDO.getNote());
-        values.put(ORGANIZATION, pJDO.getOraganization());
+        ContentValues lValues = new ContentValues();
+        lValues.put(DISPLAY_NAME, pJDO.getDisplayName());
+        lValues.put(NOTE, pJDO.getNote());
+        lValues.put(ORGANIZATION, pJDO.getOraganization());
 
-        long lId = lSqLiteDatabase.insert(TABLE_NAME,null,values);
+        long lId = lSqLiteDatabase.insert(TABLE_NAME,null,lValues);
 
         return (int) lId;
 

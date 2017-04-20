@@ -18,18 +18,18 @@ public class ValidationHelper {
     public static final Pattern VALID_PINCODE_REGEX = Pattern.compile("^[1-9][0-9]{5}$", Pattern.CASE_INSENSITIVE);
 
     public static boolean validateEmail(String emailId) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailId);
-        return matcher.find();
+        Matcher lMatcher = VALID_EMAIL_ADDRESS_REGEX.matcher(emailId);
+        return lMatcher.find();
     }
 
     public static boolean validateMobileNumber(String number) {
-        Matcher matcher = VALID_NUMBER_REGEX.matcher(number);
-        return matcher.find();
+        Matcher lMatcher = VALID_NUMBER_REGEX.matcher(number);
+        return lMatcher.find();
     }
 
     public static boolean validatePincode(int number) {
-        Matcher matcher = VALID_PINCODE_REGEX.matcher(String.valueOf(number));
-        return matcher.find();
+        Matcher lMatcher = VALID_PINCODE_REGEX.matcher(String.valueOf(number));
+        return lMatcher.find();
     }
 
 }

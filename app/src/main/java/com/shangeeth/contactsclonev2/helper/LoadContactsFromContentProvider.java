@@ -91,7 +91,6 @@ public class LoadContactsFromContentProvider {
 
     public void loadDataForSecondaryTable(Context pContext){
 
-        SQLiteDatabase sqLiteDatabase = new ContactsDBHelper(pContext).getReadableDatabase();
         ContentResolver lContentResolver = pContext.getContentResolver();
 
         ArrayList<SecondaryContactsJDO> lSecondaryContactsJDOs = new ArrayList<>();
@@ -99,99 +98,99 @@ public class LoadContactsFromContentProvider {
                 Getting data for the second table
                  */
 
-        Cursor phoneNumberCursor = lContentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null, null);
+        Cursor lPhoneNumberCursor = lContentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null, null);
 
-        if (phoneNumberCursor.moveToFirst()) {
+        if (lPhoneNumberCursor.moveToFirst()) {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
-                secondaryContactsJDO.setContactId(phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
+                secondaryContactsJDO.setContactId(lPhoneNumberCursor.getString(lPhoneNumberCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
                 secondaryContactsJDO.setType(ContactsDataTable.Type.PHONE);
-                secondaryContactsJDO.setData(phoneNumberCursor.getString(phoneNumberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                secondaryContactsJDO.setData(lPhoneNumberCursor.getString(lPhoneNumberCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
 
                 lSecondaryContactsJDOs.add(secondaryContactsJDO);
 
-            } while (phoneNumberCursor.moveToNext());
+            } while (lPhoneNumberCursor.moveToNext());
         }
-        phoneNumberCursor.close();
+        lPhoneNumberCursor.close();
 
 
-        Cursor emailCursor = lContentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null,null, null);
+        Cursor lEmailCursor = lContentResolver.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null,null, null);
 
-        if (emailCursor.moveToFirst()) {
+        if (lEmailCursor.moveToFirst()) {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
-                secondaryContactsJDO.setContactId(emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
+                secondaryContactsJDO.setContactId(lEmailCursor.getString(lEmailCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
                 secondaryContactsJDO.setType(ContactsDataTable.Type.EMAIL);
-                secondaryContactsJDO.setData(emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)));
+                secondaryContactsJDO.setData(lEmailCursor.getString(lEmailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Email.ADDRESS)));
 
                 lSecondaryContactsJDOs.add(secondaryContactsJDO);
 
-            } while (emailCursor.moveToNext());
+            } while (lEmailCursor.moveToNext());
         }
-        emailCursor.close();
+        lEmailCursor.close();
 
 
-        Cursor websiteCursor = lContentResolver.query(ContactsContract.Data.CONTENT_URI, null,
+        Cursor lWebsiteCursor = lContentResolver.query(ContactsContract.Data.CONTENT_URI, null,
                 ContactsContract.Data.MIMETYPE + "=?", new String[]{ContactsContract.CommonDataKinds.Website.CONTENT_ITEM_TYPE}, null);
 
-        if (websiteCursor.moveToFirst()) {
+        if (lWebsiteCursor.moveToFirst()) {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
-                secondaryContactsJDO.setContactId(websiteCursor.getString(websiteCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
+                secondaryContactsJDO.setContactId(lWebsiteCursor.getString(lWebsiteCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
                 secondaryContactsJDO.setType(ContactsDataTable.Type.WEBSITE);
-                secondaryContactsJDO.setData(websiteCursor.getString(websiteCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL)));
+                secondaryContactsJDO.setData(lWebsiteCursor.getString(lWebsiteCursor.getColumnIndex(ContactsContract.CommonDataKinds.Website.URL)));
 
                 lSecondaryContactsJDOs.add(secondaryContactsJDO);
 
-            } while (websiteCursor.moveToNext());
+            } while (lWebsiteCursor.moveToNext());
         }
-        websiteCursor.close();
+        lWebsiteCursor.close();
 
-        Cursor imCursor = lContentResolver.query(ContactsContract.Data.CONTENT_URI, null,
+        Cursor lImCursor = lContentResolver.query(ContactsContract.Data.CONTENT_URI, null,
                 ContactsContract.Data.MIMETYPE + "=? " , new String[]{ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE}, null);
 
-        if (imCursor.moveToFirst()) {
+        if (lImCursor.moveToFirst()) {
             do {
                 SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
-                secondaryContactsJDO.setContactId(imCursor.getString(imCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
+                secondaryContactsJDO.setContactId(lImCursor.getString(lImCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
                 secondaryContactsJDO.setType(ContactsDataTable.Type.IM);
-                secondaryContactsJDO.setData(imCursor.getString(imCursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA)));
+                secondaryContactsJDO.setData(lImCursor.getString(lImCursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA)));
 
                 lSecondaryContactsJDOs.add(secondaryContactsJDO);
 
-            } while (imCursor.moveToNext());
+            } while (lImCursor.moveToNext());
         }
-        imCursor.close();
+        lImCursor.close();
 
-        Cursor addressCursor = lContentResolver.query(ContactsContract.Data.CONTENT_URI, null,
+        Cursor lAddressCursor = lContentResolver.query(ContactsContract.Data.CONTENT_URI, null,
                 ContactsContract.Data.MIMETYPE + "=? " , new String[]{ContactsContract.CommonDataKinds.StructuredPostal.CONTENT_ITEM_TYPE}, null);
 
-        if (addressCursor.moveToFirst()) {
+        if (lAddressCursor.moveToFirst()) {
             do {
-                SecondaryContactsJDO secondaryContactsJDO = new SecondaryContactsJDO();
-                secondaryContactsJDO.setContactId(addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
-                secondaryContactsJDO.setType(ContactsDataTable.Type.ADDRESS);
+                SecondaryContactsJDO lSecondaryContactsJDO = new SecondaryContactsJDO();
+                lSecondaryContactsJDO.setContactId(lAddressCursor.getString(lAddressCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID)));
+                lSecondaryContactsJDO.setType(ContactsDataTable.Type.ADDRESS);
                 JSONObject jsonObject = new JSONObject();
                 try {
-                    jsonObject.put("POBOX", addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX)));
-                    jsonObject.put("STREET", addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET)));
-                    jsonObject.put("CITY", addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY)));
-                    jsonObject.put("REGION", addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION)));
-                    jsonObject.put("POSTCODE", addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE)));
-                    jsonObject.put("COUNTRY", addressCursor.getString(addressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY)));
+                    jsonObject.put("POBOX", lAddressCursor.getString(lAddressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POBOX)));
+                    jsonObject.put("STREET", lAddressCursor.getString(lAddressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.STREET)));
+                    jsonObject.put("CITY", lAddressCursor.getString(lAddressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.CITY)));
+                    jsonObject.put("REGION", lAddressCursor.getString(lAddressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.REGION)));
+                    jsonObject.put("POSTCODE", lAddressCursor.getString(lAddressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.POSTCODE)));
+                    jsonObject.put("COUNTRY", lAddressCursor.getString(lAddressCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredPostal.COUNTRY)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                secondaryContactsJDO.setData(jsonObject.toString());
+                lSecondaryContactsJDO.setData(jsonObject.toString());
 
-                lSecondaryContactsJDOs.add(secondaryContactsJDO);
+                lSecondaryContactsJDOs.add(lSecondaryContactsJDO);
 
-            } while (addressCursor.moveToNext());
+            } while (lAddressCursor.moveToNext());
         }
-        addressCursor.close();
+        lAddressCursor.close();
 
-        ContactsDataTable fieldsTable = new ContactsDataTable(pContext);
-        fieldsTable.insertRows(lSecondaryContactsJDOs);
+        ContactsDataTable lFieldsTable = new ContactsDataTable(pContext);
+        lFieldsTable.insertRows(lSecondaryContactsJDOs);
 
 
     }

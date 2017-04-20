@@ -19,12 +19,12 @@ import java.util.ArrayList;
 public class HomeActivityCustomRecyclerViewAdapter extends RecyclerView.Adapter<HomeActivityCustomRecyclerViewAdapter.ViewHolder> {
 
 
-    ArrayList<PrimaryContactJDO> contactsJDOs;
+    ArrayList<PrimaryContactJDO> mContactsJDOs;
     private Context mContext;
 
     public HomeActivityCustomRecyclerViewAdapter(Context mContext, ArrayList<PrimaryContactJDO> contactsJDOs) {
         this.mContext = mContext;
-        this.contactsJDOs = contactsJDOs;
+        this.mContactsJDOs = contactsJDOs;
     }
 
     @Override
@@ -41,10 +41,10 @@ public class HomeActivityCustomRecyclerViewAdapter extends RecyclerView.Adapter<
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.mContactNameTV.setText(contactsJDOs.get(position).getDisplayName());
+        holder.mContactNameTV.setText(mContactsJDOs.get(position).getDisplayName());
 
         Picasso.with(mContext)
-                .load(contactsJDOs.get(position).getPhotoUri())
+                .load(mContactsJDOs.get(position).getPhotoUri())
                 .placeholder(R.drawable.contact_placeholder)
                 .resize(100,100)
                 .transform(new RoundedTransformation(100,1))
@@ -54,7 +54,7 @@ public class HomeActivityCustomRecyclerViewAdapter extends RecyclerView.Adapter<
 
     @Override
     public int getItemCount() {
-        return contactsJDOs.size();
+        return mContactsJDOs.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

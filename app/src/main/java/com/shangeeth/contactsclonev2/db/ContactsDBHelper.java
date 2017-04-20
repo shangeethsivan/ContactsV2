@@ -22,23 +22,23 @@ public class ContactsDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        ContactsTable table = new ContactsTable(mContext);
-        table.createTable(db);
+        ContactsTable lTable = new ContactsTable(mContext);
+        lTable.createTable(db);
 
-        ContactsDataTable fieldsTable = new ContactsDataTable(mContext);
-        fieldsTable.createTable(db);
+        ContactsDataTable lFieldsTable = new ContactsDataTable(mContext);
+        lFieldsTable.createTable(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        ContactsTable table = new ContactsTable(mContext);
-        table.dropTable(db);
-        table.createTable(db);
+        ContactsTable lTable = new ContactsTable(mContext);
+        lTable.dropTable(db);
+        lTable.createTable(db);
 
-        ContactsDataTable fieldsTable = new ContactsDataTable(mContext);
-        fieldsTable.dropTable(db);
-        fieldsTable.createTable(db);
+        ContactsDataTable lDataTable = new ContactsDataTable(mContext);
+        lDataTable.dropTable(db);
+        lDataTable.createTable(db);
     }
 
 

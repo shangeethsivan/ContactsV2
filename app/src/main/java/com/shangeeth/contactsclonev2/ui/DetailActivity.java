@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
-import com.shangeeth.contactsclonev2.AddOrEditActivity;
 import com.shangeeth.contactsclonev2.R;
 import com.shangeeth.contactsclonev2.adapters.DetailActivityCustomRecylerViewAdapter;
 import com.shangeeth.contactsclonev2.db.ContactsDataTable;

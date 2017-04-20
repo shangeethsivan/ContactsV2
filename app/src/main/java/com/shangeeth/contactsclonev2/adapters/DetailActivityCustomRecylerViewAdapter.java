@@ -58,18 +58,18 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
                 Displaying buttons based on the type
              */
 
-            String type = mContactsJDOs.get(position).getType();
+            String lType = mContactsJDOs.get(position).getType();
 
-            if (type.equalsIgnoreCase(ContactsDataTable.Type.PHONE)) {
+            if (lType.equalsIgnoreCase(ContactsDataTable.Type.PHONE)) {
 
                 holder.mCallIV.setVisibility(View.VISIBLE);
                 holder.mMessageIV.setVisibility(View.VISIBLE);
 
-            } else if (type.equalsIgnoreCase(ContactsDataTable.Type.EMAIL)) {
+            } else if (lType.equalsIgnoreCase(ContactsDataTable.Type.EMAIL)) {
 
                 holder.mEmailIV.setVisibility(View.VISIBLE);
 
-            } else if (type.equalsIgnoreCase(ContactsDataTable.Type.WEBSITE)) {
+            } else if (lType.equalsIgnoreCase(ContactsDataTable.Type.WEBSITE)) {
                 holder.mWebsiteIV.setVisibility(View.VISIBLE);
             }
 
@@ -79,26 +79,26 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
              */
 
 
-            if (mLastDisplayedType.equals(type)) {
+            if (mLastDisplayedType.equals(lType)) {
                 mIsNewCategory = false;
             } else {
                 mIsNewCategory = true;
             }
-            mLastDisplayedType = type;
+            mLastDisplayedType = lType;
             if (mIsNewCategory) {
 
-                if (type.length() > 1) {
-                    type = type.substring(0, 1).toUpperCase() + type.substring(1, type.length());
+                if (lType.length() > 1) {
+                    lType = lType.substring(0, 1).toUpperCase() + lType.substring(1, lType.length());
                 } else {
-                    type = type.toUpperCase();
+                    lType = lType.toUpperCase();
                 }
-                holder.mTypeTV.setText(type);
+                holder.mTypeTV.setText(lType);
 
             } else {
                 holder.mTypeTV.setVisibility(View.GONE);
             }
 
-            if (type.equalsIgnoreCase(ContactsDataTable.Type.ADDRESS) || type.equalsIgnoreCase("Organization")) {
+            if (lType.equalsIgnoreCase(ContactsDataTable.Type.ADDRESS) || lType.equalsIgnoreCase("Organization")) {
 
                 try {
                     StringBuilder lBuilder = new StringBuilder();
@@ -172,11 +172,11 @@ public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter
                     v.getContext().startActivity(lEmailIntent);
                     break;
                 case R.id.website_iv:
-                    String data = mDataTV.getText().toString();
-                    if (!data.contains("http://")) {
-                        data = "http://" + data;
+                    String lData = mDataTV.getText().toString();
+                    if (!lData.contains("http://")) {
+                        lData = "http://" + lData;
                     }
-                    Intent lWebsiteIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(data));
+                    Intent lWebsiteIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(lData));
                     v.getContext().startActivity(lWebsiteIntent);
                     break;
             }
