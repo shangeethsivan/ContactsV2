@@ -6,8 +6,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +18,7 @@ import com.shangeeth.contactsclonev2.db.ContactsDataTable;
 import com.shangeeth.contactsclonev2.db.ContactsTable;
 import com.shangeeth.contactsclonev2.jdo.PrimaryContactJDO;
 import com.shangeeth.contactsclonev2.jdo.SecondaryContactsJDO;
+import com.shangeeth.contactsclonev2.util.Util;
 
 import java.util.ArrayList;
 
@@ -365,41 +368,6 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     }
 
-    /**
-     * Removes the last View in the Layout and from the ArrayList
-     *
-     * @param pViews
-     * @param pLayout
-     */
-    public void removeLastViewInPhone(ArrayList<View> pViews, ArrayList<EditTextAndIdJDO> pEditTextAndIdJDOs, LinearLayout pLayout) {
-
-        //TODO: If needed delete the edit text this can be a your source of issue if you are using the arraylist of editTexts
-
-        pLayout.removeView(pViews.get(pViews.size() - 1));
-        pViews.remove(pViews.get(pViews.size() - 1));
-        String lId = pEditTextAndIdJDOs.get(pEditTextAndIdJDOs.size() - 1).getmId();
-        if (!lId.equals("-1")) {
-            mIdsTobeDeleted.add(lId);
-        }
-        pEditTextAndIdJDOs.remove(pEditTextAndIdJDOs.get(pEditTextAndIdJDOs.size() - 1));
-
-    }
-
-    /**
-     * Sets the last View in the group with a delete Button
-     *
-     * @param pViews the arrayList of view groups
-     */
-    public void setLastViewWithDeleteButton(ArrayList<View> pViews) {
-
-        for (View lView : pViews) {
-            ((ImageView) lView.findViewById(R.id.delete_iv)).setVisibility(View.INVISIBLE);
-        }
-        if (pViews.size() >= 1) {
-            ((ImageView) pViews.get(pViews.size() - 1).findViewById(R.id.delete_iv)).setVisibility(View.VISIBLE);
-        }
-
-    }
 
 
     /**
@@ -425,15 +393,33 @@ public class AddOrEditActivity extends AppCompatActivity {
         ((ImageView) lView.findViewById(R.id.delete_iv)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeLastViewInPhone(pViews, pEditTextAndIdJDOs, pLinearLayout);
-                setLastViewWithDeleteButton(pViews);
+
+                //Get the parent View and send it to remove method .
+
+                removeView((View)v.getParent(),pViews,pLinearLayout,pEditTextAndIdJDOs);
+
             }
         });
 
-        setLastViewWithDeleteButton(pViews);
 
         pLinearLayout.addView(lView);
     }
+
+    private void removeView(View pView,ArrayList<View> pViews, LinearLayout pLinearLayout, ArrayList<EditTextAndIdJDO> pEditTextAndIdJDOs) {
+
+        pLinearLayout.removeView(pView);
+        int lIndex = Util.getItemIndex(pViews,pView);
+        pViews.remove(pView);
+
+        String lId = pEditTextAndIdJDOs.get(lIndex).getmId();
+        if (!lId.equals("-1")) {
+            mIdsTobeDeleted.add(lId);
+        }
+
+        pEditTextAndIdJDOs.remove(lIndex);
+
+    }
+
 
     public class EditTextAndIdJDO {
         EditText mEditText;
