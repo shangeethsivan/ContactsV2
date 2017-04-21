@@ -90,7 +90,7 @@ public class DetailActivity extends AppCompatActivity {
         lNoteJDO.setContactId(mCurrentId);
         lNoteJDO.setData(mContactsJDO.getNote());
         lNoteJDO.setType("Note");
-        if (!mContactsJDO.getNote().trim().equals("")) {
+        if (mContactsJDO.getNote()!= null && !mContactsJDO.getNote().trim().equals("")) {
             mContactsDataJDOs.add(lNoteJDO);
         }
 
@@ -99,7 +99,7 @@ public class DetailActivity extends AppCompatActivity {
         lOrganizationJDO.setData(mContactsJDO.getOraganization());
         lOrganizationJDO.setType("Organization");
 
-        if (!mContactsJDO.getOraganization().trim().equals("")) {
+        if (mContactsJDO.getOraganization()!=null && !mContactsJDO.getOraganization().trim().equals("")) {
         mContactsDataJDOs.add(lOrganizationJDO);
         }
 

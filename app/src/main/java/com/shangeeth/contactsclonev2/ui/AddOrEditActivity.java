@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -68,7 +69,6 @@ public class AddOrEditActivity extends AppCompatActivity {
     private ArrayList<SecondaryContactsJDO> mContactsJDOs;
     private String mCurrentId;
 
-    private FloatingActionButton mFab;
     private String mContactName;
 
     ArrayList<String> mIdsTobeDeleted;
@@ -112,8 +112,6 @@ public class AddOrEditActivity extends AppCompatActivity {
         mImEditTextAndIdJDOs = new ArrayList<>();
         mAddressEditTextAndIdJDOs = new ArrayList<>();
 
-
-        mFab = (FloatingActionButton) findViewById(R.id.save_fab);
 
         mPhoneEditTexts = new ArrayList<>();
         mPhoneViews = new ArrayList<>();
@@ -203,6 +201,15 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.add_or_edit_menu,menu);
+        return true;
+    }
+
+
+
+
     public void setOnClickListeners() {
 
         mPhoneAddIV.setOnClickListener(new View.OnClickListener() {
@@ -246,13 +253,6 @@ public class AddOrEditActivity extends AppCompatActivity {
 
                 addView(mLinearLayoutAddress, null, mAddressViews, InputType.TYPE_CLASS_TEXT, "", "newData", ContactsDataTable.Type.ADDRESS);
 
-            }
-        });
-
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveContacts();
             }
         });
 
@@ -618,8 +618,13 @@ public class AddOrEditActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+
             case android.R.id.home:
                 finish();
+                break;
+
+            case R.id.save_menu:
+                saveContacts();
                 break;
         }
         return true;

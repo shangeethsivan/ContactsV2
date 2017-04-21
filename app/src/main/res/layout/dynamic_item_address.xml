@@ -14,17 +14,23 @@
         <EditText
             android:id="@+id/street_edt"
             android:hint="Street"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/edt_bg"
             android:lines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/city_edt"
             android:hint="City"
+            android:background="@drawable/edt_bg"
             android:lines="1"
+            android:layout_marginTop="3dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/state_edt"
+            android:background="@drawable/edt_bg"
+            android:layout_marginTop="3dp"
             android:lines="1"
             android:layout_width="match_parent"
             android:hint="State"
@@ -32,12 +38,16 @@
         <EditText
             android:id="@+id/zipcode_edt"
             android:lines="1"
+            android:background="@drawable/edt_bg"
+            android:layout_marginTop="3dp"
             android:hint="ZipCode"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <EditText
             android:id="@+id/country_edt"
+            android:background="@drawable/edt_bg"
             android:hint="Country"
+            android:layout_marginTop="3dp"
             android:lines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

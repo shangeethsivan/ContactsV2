@@ -155,7 +155,7 @@ public class ContactsDataTable {
         lSqLiteDatabase.delete(TABLE_NAME, CONTACT_ID + "=?", new String[]{pContactId});
 
         lSqLiteDatabase.close();
-
+        
     }
 
     public void insertOrUpdateData(ArrayList<SecondaryContactsJDO> pSecondaryContactsJDOs) {
