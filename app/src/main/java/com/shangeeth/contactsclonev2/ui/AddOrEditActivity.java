@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -152,6 +153,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             loadAllDatas();
 
         } else {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
             mActionBar.setTitle("Add Contact");
             loadEmptyFields();
         }
@@ -306,7 +308,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             lPrimaryContactJDO.setId(mCurrentId);
             lPrimaryContactJDO.setDisplayName(mNameEDT.getText().toString().trim());
             lPrimaryContactJDO.setNote(mNoteEDT.getText().toString());
-            if(!mOrgNameEDT.getText().toString().trim().equals("") && !mOrgTitleEDT.getText().toString().trim().equals("")) {
+            if (!mOrgNameEDT.getText().toString().trim().equals("") && !mOrgTitleEDT.getText().toString().trim().equals("")) {
                 JSONObject lJsonObjectOrg = new JSONObject();
                 try {
                     lJsonObjectOrg.put("Organisation Data", mOrgNameEDT.getText().toString().trim());
@@ -427,7 +429,7 @@ public class AddOrEditActivity extends AppCompatActivity {
                 lIntent.putExtra(getString(R.string.id_extra), mCurrentId);
                 setResult(1, lIntent);
                 finish();
-                overridePendingTransition(R.anim.from_left,R.anim.to_right);
+                overridePendingTransition(R.anim.from_left, R.anim.to_right);
 
             } else {
 
@@ -436,7 +438,7 @@ public class AddOrEditActivity extends AppCompatActivity {
                 lIntent.putExtra(getString(R.string.contact_added), true);
                 setResult(0, lIntent);
                 finish();
-                overridePendingTransition(R.anim.from_up,R.anim.to_bottom);
+                overridePendingTransition(R.anim.from_up, R.anim.to_bottom);
 
 
             }
@@ -673,13 +675,12 @@ public class AddOrEditActivity extends AppCompatActivity {
     public void onBackPressed() {
 
         //Create a new Edited Data and compare with the unedited data
-        if (!mIsEditActivity) {
+        if (isNewDataSame()) {
             finish();
-            overridePendingTransition(R.anim.from_up,R.anim.to_bottom);
-
-        } else if (isNewDataSame()) {
-            finish();
-            overridePendingTransition(R.anim.from_left,R.anim.to_right);
+            if (!mIsEditActivity)
+                overridePendingTransition(R.anim.from_up, R.anim.to_bottom);
+            else
+                overridePendingTransition(R.anim.from_left, R.anim.to_right);
         } else {
             AlertDialog.Builder lBuilder = new AlertDialog.Builder(this);
             lBuilder.setTitle("Discard Changes");
@@ -687,8 +688,13 @@ public class AddOrEditActivity extends AppCompatActivity {
             lBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    finish();
-                    overridePendingTransition(R.anim.from_left,R.anim.to_right);
+                    if (!mIsEditActivity) {
+                        finish();
+                        overridePendingTransition(R.anim.from_up, R.anim.to_bottom);
+                    } else {
+                        finish();
+                        overridePendingTransition(R.anim.from_left, R.anim.to_right);
+                    }
                 }
             });
             lBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -707,30 +713,43 @@ public class AddOrEditActivity extends AppCompatActivity {
         int lTempIndex = 1;
         JSONObject lJsonObject = new JSONObject();
         try {
-            lJsonObject.put("0", mNameEDT.getText().toString().trim());
+            if (!mNameEDT.getText().toString().trim().equals(""))
+                lJsonObject.put("0", mNameEDT.getText().toString().trim());
             for (EditTextAndIdJDO lEditTextAndIdJDO : mPhoneEditTextJDO) {
-                lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals(""))
+                    lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
             }
             for (EditTextAndIdJDO lEditTextAndIdJDO : mEmailEditTextAndIdJDOs) {
-                lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals(""))
+                    lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
             }
             for (EditTextAndIdJDO lEditTextAndIdJDO : mWebsiteEditTextAndIdJDOs) {
-                lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals(""))
+                    lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
             }
             for (EditTextAndIdJDO lEditTextAndIdJDO : mImEditTextAndIdJDOs) {
-                lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+                if (!lEditTextAndIdJDO.getmEditText().getText().toString().equals(""))
+                    lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
             }
             for (EditTextAndIdAddressJDO lEditTextAndIdJDO : mAddressEditTextAndIdJDOs) {
 
-                JSONObject lAddressJsonObject = new JSONObject();
-                //{"STREET":"334","CITY":"Fggg","REGION":"Tn","POSTCODE":"666005","COUNTRY":"In"}
-                lAddressJsonObject.put("STREET", lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim());
-                lAddressJsonObject.put("CITY", lEditTextAndIdJDO.getmCityEdt().getText().toString().trim());
-                lAddressJsonObject.put("REGION", lEditTextAndIdJDO.getmStateEdt().getText().toString().trim());
-                lAddressJsonObject.put("POSTCODE", lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim());
-                lAddressJsonObject.put("COUNTRY", lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim());
+                String lTempString = lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim()
+                        + lEditTextAndIdJDO.getmCityEdt().getText().toString().trim()
+                        + lEditTextAndIdJDO.getmStateEdt().getText().toString().trim()
+                        + lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim()
+                        + lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim();
 
-                lJsonObject.put(String.valueOf(lTempIndex++), lAddressJsonObject.toString());
+                if (!lTempString.equals("")) {
+                    JSONObject lAddressJsonObject = new JSONObject();
+                    //{"STREET":"334","CITY":"Fggg","REGION":"Tn","POSTCODE":"666005","COUNTRY":"In"}
+                    lAddressJsonObject.put("STREET", lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim());
+                    lAddressJsonObject.put("CITY", lEditTextAndIdJDO.getmCityEdt().getText().toString().trim());
+                    lAddressJsonObject.put("REGION", lEditTextAndIdJDO.getmStateEdt().getText().toString().trim());
+                    lAddressJsonObject.put("POSTCODE", lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim());
+                    lAddressJsonObject.put("COUNTRY", lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim());
+
+                    lJsonObject.put(String.valueOf(lTempIndex++), lAddressJsonObject.toString());
+                }
             }
 
             if (!mNoteEDT.getText().toString().trim().equals(""))
@@ -747,7 +766,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-         if (lJsonObject.toString().equals(mUnEditedData)) {
+        if (lJsonObject.toString().equals(mUnEditedData) || lJsonObject.toString().equals("{}")) {
             return true;
         } else {
             return false;
