@@ -1,7 +1,6 @@
 package com.shangeeth.contactsclonev2.ui;
 
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,7 +35,8 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     EditText mNameEDT;
     EditText mNoteEDT;
-    EditText mOrgEDT;
+    EditText mOrgTitleEDT;
+    EditText mOrgNameEDT;
 
     ImageView mPhoneAddIV;
     ImageView mEmailAddIV;
@@ -103,7 +103,8 @@ public class AddOrEditActivity extends AppCompatActivity {
 
         mNameEDT = (EditText) findViewById(R.id.name_edt_txt);
         mNoteEDT = (EditText) findViewById(R.id.note_edt);
-        mOrgEDT = (EditText) findViewById(R.id.organization_edt);
+        mOrgTitleEDT = (EditText) findViewById(R.id.org_title);
+        mOrgNameEDT = (EditText) findViewById(R.id.org_name);
 
 
         mPhoneEditTextJDO = new ArrayList<>();
@@ -182,7 +183,13 @@ public class AddOrEditActivity extends AppCompatActivity {
             } else if (lType.equalsIgnoreCase("Note")) {
                 mNoteEDT.setText(lSecondaryContactsJDO.getData());
             } else if (lType.equalsIgnoreCase("Organization")) {
-                mOrgEDT.setText(lSecondaryContactsJDO.getData());
+                try {
+                    JSONObject lJsonObject = new JSONObject(lSecondaryContactsJDO.getData());
+                    mOrgTitleEDT.setText(lJsonObject.getString("Organisation Title"));
+                    mOrgNameEDT.setText(lJsonObject.getString("Organisation Data"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -266,7 +273,14 @@ public class AddOrEditActivity extends AppCompatActivity {
             lPrimaryContactJDO.setId(mCurrentId);
             lPrimaryContactJDO.setDisplayName(mNameEDT.getText().toString().trim());
             lPrimaryContactJDO.setNote(mNoteEDT.getText().toString());
-            lPrimaryContactJDO.setOraganization(mOrgEDT.getText().toString());
+            JSONObject lJsonObjectOrg = new JSONObject();
+            try {
+                lJsonObjectOrg.put("Organisation Data",mOrgNameEDT.getText().toString().trim());
+                lJsonObjectOrg.put("Organisation Title",mOrgTitleEDT.getText().toString().trim());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            lPrimaryContactJDO.setOraganization(lJsonObjectOrg.toString());
 
             ContactsTable lTable = new ContactsTable(this);
             //If adding new Contacts add the contacts and update the Current ID.
@@ -345,19 +359,19 @@ public class AddOrEditActivity extends AppCompatActivity {
                     lSecondaryContactsJDO.setType(ContactsDataTable.Type.ADDRESS);
                     lSecondaryContactsJDO.setId(lEditTextAndIdJDO.getmId());
                     lSecondaryContactsJDO.setContactId(mCurrentId);
-                    JSONObject lJsonObject = new JSONObject();
+                    JSONObject lJsonObjectAddress = new JSONObject();
 
                     //{"STREET":"334","CITY":"Fggg","REGION":"Tn","POSTCODE":"666005","COUNTRY":"In"}
                     try {
-                        lJsonObject.put("STREET",lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim());
-                        lJsonObject.put("CITY",lEditTextAndIdJDO.getmCityEdt().getText().toString().trim());
-                        lJsonObject.put("REGION",lEditTextAndIdJDO.getmStateEdt().getText().toString().trim());
-                        lJsonObject.put("POSTCODE",lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim());
-                        lJsonObject.put("COUNTRY",lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("STREET",lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("CITY",lEditTextAndIdJDO.getmCityEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("REGION",lEditTextAndIdJDO.getmStateEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("POSTCODE",lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("COUNTRY",lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    lSecondaryContactsJDO.setData(lJsonObject.toString());
+                    lSecondaryContactsJDO.setData(lJsonObjectAddress.toString());
 
 //                    lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
                     lDataToBeAdded.add(lSecondaryContactsJDO);
@@ -447,7 +461,7 @@ public class AddOrEditActivity extends AppCompatActivity {
         if(!mNoteEDT.getText().toString().trim().equals("")){
             return false;
         }
-        else if(!mOrgEDT.getText().toString().trim().equals("")){
+        else if(!mOrgTitleEDT.getText().toString().trim().equals("") || !mOrgNameEDT.getText().toString().trim().equals("")){
             return false;
         }
 
