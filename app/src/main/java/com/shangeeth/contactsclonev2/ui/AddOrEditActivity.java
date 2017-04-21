@@ -427,6 +427,7 @@ public class AddOrEditActivity extends AppCompatActivity {
                 lIntent.putExtra(getString(R.string.id_extra), mCurrentId);
                 setResult(1, lIntent);
                 finish();
+                overridePendingTransition(R.anim.from_left,R.anim.to_right);
 
             } else {
 
@@ -435,6 +436,8 @@ public class AddOrEditActivity extends AppCompatActivity {
                 lIntent.putExtra(getString(R.string.contact_added), true);
                 setResult(0, lIntent);
                 finish();
+                overridePendingTransition(R.anim.from_up,R.anim.to_bottom);
+
 
             }
         } else {
@@ -672,8 +675,11 @@ public class AddOrEditActivity extends AppCompatActivity {
         //Create a new Edited Data and compare with the unedited data
         if (!mIsEditActivity) {
             finish();
+            overridePendingTransition(R.anim.from_up,R.anim.to_bottom);
+
         } else if (isNewDataSame()) {
             finish();
+            overridePendingTransition(R.anim.from_left,R.anim.to_right);
         } else {
             AlertDialog.Builder lBuilder = new AlertDialog.Builder(this);
             lBuilder.setTitle("Discard Changes");
@@ -682,6 +688,7 @@ public class AddOrEditActivity extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     finish();
+                    overridePendingTransition(R.anim.from_left,R.anim.to_right);
                 }
             });
             lBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -697,7 +704,6 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     private boolean isNewDataSame() {
 
-        String lNewData = "";
         int lTempIndex = 1;
         JSONObject lJsonObject = new JSONObject();
         try {
@@ -724,7 +730,7 @@ public class AddOrEditActivity extends AppCompatActivity {
                 lAddressJsonObject.put("POSTCODE", lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim());
                 lAddressJsonObject.put("COUNTRY", lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim());
 
-                lAddressJsonObject.put(String.valueOf(lTempIndex++), lAddressJsonObject.toString());
+                lJsonObject.put(String.valueOf(lTempIndex++), lAddressJsonObject.toString());
             }
 
             if (!mNoteEDT.getText().toString().trim().equals(""))
@@ -732,8 +738,8 @@ public class AddOrEditActivity extends AppCompatActivity {
 
             if (!mOrgNameEDT.getText().toString().trim().equals("") || !mOrgTitleEDT.getText().toString().trim().equals("")) {
                 JSONObject lOrgJsonObject = new JSONObject();
+                lOrgJsonObject.put("Organisation Data", mOrgNameEDT.getText().toString().trim());
                 lOrgJsonObject.put("Organisation Title", mOrgTitleEDT.getText().toString().trim());
-                lOrgJsonObject.put("Organisation Name", mOrgNameEDT.getText().toString().trim());
                 lJsonObject.put(String.valueOf(lTempIndex++), lOrgJsonObject.toString());
             }
 

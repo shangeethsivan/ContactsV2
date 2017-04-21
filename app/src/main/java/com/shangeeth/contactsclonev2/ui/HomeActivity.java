@@ -74,7 +74,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onItemClick(View view, int position) {
 
                 startActivityForResult(new Intent(HomeActivity.this, DetailActivity.class).putExtra(getString(R.string.id_extra), mContactListJDO.get(position).getId()), 0);
-
+                overridePendingTransition(R.anim.from_right,R.anim.to_left);
             }
         }));
     }
@@ -86,6 +86,8 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivityForResult(new Intent(HomeActivity.this, AddOrEditActivity.class)
                         .putExtra(getString(R.string.request_code),REQUEST_CODE),REQUEST_CODE);
+                overridePendingTransition(R.anim.from_bottom,R.anim.to_up);
+
             }
         });
 

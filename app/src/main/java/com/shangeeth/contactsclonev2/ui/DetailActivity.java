@@ -155,6 +155,7 @@ public class DetailActivity extends AppCompatActivity {
     public void onBackPressed() {
         setResult(0, new Intent().putExtra(getString(R.string.is_data_updated), mUpdated));
         finish();
+        overridePendingTransition(R.anim.from_left,R.anim.to_right);
     }
 
     @Override
@@ -169,11 +170,13 @@ public class DetailActivity extends AppCompatActivity {
                 lIntent.putExtra(getString(R.string.request_code), REQUEST_CODE);
 
                 startActivityForResult(lIntent, REQUEST_CODE);
+                overridePendingTransition(R.anim.from_right,R.anim.to_left);
                 break;
 
             case android.R.id.home:
                 setResult(0, new Intent().putExtra(getString(R.string.is_data_updated), mUpdated));
                 finish();
+                overridePendingTransition(R.anim.from_left,R.anim.to_right);
                 break;
             case R.id.delete_contact:
                 final AlertDialog.Builder lBuilder = new AlertDialog.Builder(this);
@@ -197,6 +200,7 @@ public class DetailActivity extends AppCompatActivity {
         }
         return true;
     }
+
 
     private void deleteContact() {
 
