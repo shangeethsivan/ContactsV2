@@ -60,7 +60,7 @@ public class PrimaryContactJDO implements Serializable {
         return Oraganization;
     }
 
-    public void setOraganization(String oraganization) {
+    public void setOrganization(String oraganization) {
         Oraganization = oraganization;
     }
 

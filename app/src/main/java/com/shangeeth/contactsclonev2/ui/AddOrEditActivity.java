@@ -1,7 +1,10 @@
 package com.shangeeth.contactsclonev2.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -27,7 +30,7 @@ import java.util.ArrayList;
 
 public class AddOrEditActivity extends AppCompatActivity {
 
-    LinearLayout mLinearLayoutPhone;
+    private LinearLayout mLinearLayoutPhone;
     LinearLayout mLinearLayoutEmail;
     LinearLayout mLinearLayoutWebsite;
     LinearLayout mLinearLayoutIM;
@@ -69,11 +72,17 @@ public class AddOrEditActivity extends AppCompatActivity {
     private ArrayList<SecondaryContactsJDO> mContactsJDOs;
     private String mCurrentId;
 
+
     private String mContactName;
 
-    ArrayList<String> mIdsTobeDeleted;
+    private ArrayList<String> mIdsTobeDeleted;
 
     private int mRequestCode;
+
+
+    private boolean mIsEditActivity = false;
+    private String mUnEditedData = "";
+    private int mUnEditedDataIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,14 +142,17 @@ public class AddOrEditActivity extends AppCompatActivity {
 
         setOnClickListeners();
 
+        ActionBar mActionBar = getSupportActionBar();
         if (mRequestCode == 101) {
-
+            mActionBar.setTitle("Edit Contact");
+            mIsEditActivity = true;
             mContactsJDOs = (ArrayList<SecondaryContactsJDO>) lIntent.getSerializableExtra(getString(R.string.contact_data_jdos));
             mCurrentId = lIntent.getStringExtra(getString(R.string.id_extra));
             mContactName = lIntent.getStringExtra(getString(R.string.name));
             loadAllDatas();
 
         } else {
+            mActionBar.setTitle("Add Contact");
             loadEmptyFields();
         }
 
@@ -153,8 +165,13 @@ public class AddOrEditActivity extends AppCompatActivity {
 
         mNameEDT.setText(mContactName);
 
+        addToUnEditedData(mContactName);
+
         for (SecondaryContactsJDO lSecondaryContactsJDO : mContactsJDOs) {
 
+            if (!lSecondaryContactsJDO.getData().trim().equals("")) {
+                addToUnEditedData(lSecondaryContactsJDO.getData());
+            }
             String lType = lSecondaryContactsJDO.getType();
 
             if (ContactsDataTable.Type.checkType(lType)) {
@@ -165,33 +182,51 @@ public class AddOrEditActivity extends AppCompatActivity {
 
                 } else if (lType.equalsIgnoreCase(ContactsDataTable.Type.EMAIL)) {
 
-                    addView(mLinearLayoutEmail, mEmailEditTextAndIdJDOs, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId(),ContactsDataTable.Type.EMAIL);
+                    addView(mLinearLayoutEmail, mEmailEditTextAndIdJDOs, mEmailViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId(), ContactsDataTable.Type.EMAIL);
 
                 } else if (lType.equalsIgnoreCase(ContactsDataTable.Type.WEBSITE)) {
 
-                    addView(mLinearLayoutWebsite, mWebsiteEditTextAndIdJDOs, mWebsiteViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId(),ContactsDataTable.Type.WEBSITE);
+                    addView(mLinearLayoutWebsite, mWebsiteEditTextAndIdJDOs, mWebsiteViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId(), ContactsDataTable.Type.WEBSITE);
 
                 } else if (lType.equalsIgnoreCase(ContactsDataTable.Type.IM)) {
 
-                    addView(mLinearLayoutIM, mImEditTextAndIdJDOs, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId(),ContactsDataTable.Type.IM);
+                    addView(mLinearLayoutIM, mImEditTextAndIdJDOs, mImViews, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId(), ContactsDataTable.Type.IM);
 
                 } else if (lType.equalsIgnoreCase(ContactsDataTable.Type.ADDRESS)) {
 
-                    addView(mLinearLayoutAddress, null, mAddressViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId(),ContactsDataTable.Type.ADDRESS);
+                    addView(mLinearLayoutAddress, null, mAddressViews, InputType.TYPE_CLASS_TEXT, lSecondaryContactsJDO.getData(), lSecondaryContactsJDO.getId(), ContactsDataTable.Type.ADDRESS);
 
                 }
             } else if (lType.equalsIgnoreCase("Note")) {
                 mNoteEDT.setText(lSecondaryContactsJDO.getData());
             } else if (lType.equalsIgnoreCase("Organization")) {
+
                 try {
                     JSONObject lJsonObject = new JSONObject(lSecondaryContactsJDO.getData());
                     mOrgTitleEDT.setText(lJsonObject.getString("Organisation Title"));
                     mOrgNameEDT.setText(lJsonObject.getString("Organisation Data"));
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    private void addToUnEditedData(String pData) {
+        try {
+            JSONObject jsonObject;
+            if (mUnEditedData.equals(""))
+                jsonObject = new JSONObject();
+            else
+                jsonObject = new JSONObject(mUnEditedData);
+
+            jsonObject.put(String.valueOf(mUnEditedDataIndex++), pData);
+            mUnEditedData = jsonObject.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void loadEmptyFields() {
@@ -210,11 +245,9 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.add_or_edit_menu,menu);
+        getMenuInflater().inflate(R.menu.add_or_edit_menu, menu);
         return true;
     }
-
-
 
 
     public void setOnClickListeners() {
@@ -273,15 +306,16 @@ public class AddOrEditActivity extends AppCompatActivity {
             lPrimaryContactJDO.setId(mCurrentId);
             lPrimaryContactJDO.setDisplayName(mNameEDT.getText().toString().trim());
             lPrimaryContactJDO.setNote(mNoteEDT.getText().toString());
-            JSONObject lJsonObjectOrg = new JSONObject();
-            try {
-                lJsonObjectOrg.put("Organisation Data",mOrgNameEDT.getText().toString().trim());
-                lJsonObjectOrg.put("Organisation Title",mOrgTitleEDT.getText().toString().trim());
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if(!mOrgNameEDT.getText().toString().trim().equals("") && !mOrgTitleEDT.getText().toString().trim().equals("")) {
+                JSONObject lJsonObjectOrg = new JSONObject();
+                try {
+                    lJsonObjectOrg.put("Organisation Data", mOrgNameEDT.getText().toString().trim());
+                    lJsonObjectOrg.put("Organisation Title", mOrgTitleEDT.getText().toString().trim());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                lPrimaryContactJDO.setOrganization(lJsonObjectOrg.toString());
             }
-            lPrimaryContactJDO.setOraganization(lJsonObjectOrg.toString());
-
             ContactsTable lTable = new ContactsTable(this);
             //If adding new Contacts add the contacts and update the Current ID.
             if (mCurrentId == null || mCurrentId.equals("")) {
@@ -363,11 +397,11 @@ public class AddOrEditActivity extends AppCompatActivity {
 
                     //{"STREET":"334","CITY":"Fggg","REGION":"Tn","POSTCODE":"666005","COUNTRY":"In"}
                     try {
-                        lJsonObjectAddress.put("STREET",lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim());
-                        lJsonObjectAddress.put("CITY",lEditTextAndIdJDO.getmCityEdt().getText().toString().trim());
-                        lJsonObjectAddress.put("REGION",lEditTextAndIdJDO.getmStateEdt().getText().toString().trim());
-                        lJsonObjectAddress.put("POSTCODE",lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim());
-                        lJsonObjectAddress.put("COUNTRY",lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("STREET", lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("CITY", lEditTextAndIdJDO.getmCityEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("REGION", lEditTextAndIdJDO.getmStateEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("POSTCODE", lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim());
+                        lJsonObjectAddress.put("COUNTRY", lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -377,7 +411,6 @@ public class AddOrEditActivity extends AppCompatActivity {
                     lDataToBeAdded.add(lSecondaryContactsJDO);
                 }
             }
-
 
 
             //Inserting or Updating new Data Based on Ids
@@ -405,52 +438,52 @@ public class AddOrEditActivity extends AppCompatActivity {
 
             }
         } else {
-            Snackbar.make((LinearLayout) findViewById(R.id.container_layout), "You have to enter name and a field to save Contacts", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make((LinearLayout) findViewById(R.id.container_layout), "You have to enter Name and a Field to save the Contacts", Snackbar.LENGTH_SHORT).show();
         }
 
 
     }
 
 
-    public boolean areAllFieldsEmpty(){
+    public boolean areAllFieldsEmpty() {
 
-        for(EditTextAndIdJDO lEditTextAndIdJDO: mPhoneEditTextJDO){
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mPhoneEditTextJDO) {
 
-            if(!lEditTextAndIdJDO.getmEditText().getText().toString().trim().equals("")){
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().trim().equals("")) {
                 return false;
             }
 
         }
 
-        for(EditTextAndIdJDO lEditTextAndIdJDO: mEmailEditTextAndIdJDOs){
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mEmailEditTextAndIdJDOs) {
 
-            if(!lEditTextAndIdJDO.getmEditText().getText().toString().trim().equals("")){
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().trim().equals("")) {
                 return false;
             }
 
         }
 
-        for(EditTextAndIdJDO lEditTextAndIdJDO: mWebsiteEditTextAndIdJDOs){
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mWebsiteEditTextAndIdJDOs) {
 
-            if(!lEditTextAndIdJDO.getmEditText().getText().toString().trim().equals("")){
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().trim().equals("")) {
                 return false;
             }
 
         }
 
-        for(EditTextAndIdJDO lEditTextAndIdJDO: mImEditTextAndIdJDOs){
+        for (EditTextAndIdJDO lEditTextAndIdJDO : mImEditTextAndIdJDOs) {
 
-            if(!lEditTextAndIdJDO.getmEditText().getText().toString().trim().equals("")){
+            if (!lEditTextAndIdJDO.getmEditText().getText().toString().trim().equals("")) {
                 return false;
             }
 
         }
 
-        for(EditTextAndIdAddressJDO lEditTextAndIdJDO: mAddressEditTextAndIdJDOs){
+        for (EditTextAndIdAddressJDO lEditTextAndIdJDO : mAddressEditTextAndIdJDOs) {
 
-            if(!lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim().equals("")||!lEditTextAndIdJDO.getmCityEdt().getText().toString().trim().equals("")
-                    ||!lEditTextAndIdJDO.getmCityEdt().getText().toString().trim().equals("")||!lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim().equals("")
-                    ||!lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim().equals("")){
+            if (!lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim().equals("") || !lEditTextAndIdJDO.getmCityEdt().getText().toString().trim().equals("")
+                    || !lEditTextAndIdJDO.getmCityEdt().getText().toString().trim().equals("") || !lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim().equals("")
+                    || !lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim().equals("")) {
                 return false;
             }
 
@@ -458,15 +491,15 @@ public class AddOrEditActivity extends AppCompatActivity {
         }
 
 
-        if(!mNoteEDT.getText().toString().trim().equals("")){
+        if (!mNoteEDT.getText().toString().trim().equals("")) {
             return false;
-        }
-        else if(!mOrgTitleEDT.getText().toString().trim().equals("") || !mOrgNameEDT.getText().toString().trim().equals("")){
+        } else if (!mOrgTitleEDT.getText().toString().trim().equals("") || !mOrgNameEDT.getText().toString().trim().equals("")) {
             return false;
         }
 
         return true;
     }
+
     /**
      * @param pLinearLayout
      * @param pEditTextAndIdJDOs
@@ -480,7 +513,7 @@ public class AddOrEditActivity extends AppCompatActivity {
         // If the data is normal leave it else handle them separately
 
 
-        if(pType.equals(ContactsDataTable.Type.ADDRESS)){
+        if (pType.equals(ContactsDataTable.Type.ADDRESS)) {
             View lView = mInflater.inflate(R.layout.dynamic_item_address, pLinearLayout, false);
             EditText lStreetEdt = (EditText) lView.findViewById(R.id.street_edt);
             EditText lCityEdt = (EditText) lView.findViewById(R.id.city_edt);
@@ -505,9 +538,8 @@ public class AddOrEditActivity extends AppCompatActivity {
             }
 
             lStreetEdt.requestFocus();
-            mAddressEditTextAndIdJDOs.add(new EditTextAndIdAddressJDO(lStreetEdt,lCityEdt,lStateEdt,lPincodeEdt,lCountryEdt,pId));
+            mAddressEditTextAndIdJDOs.add(new EditTextAndIdAddressJDO(lStreetEdt, lCityEdt, lStateEdt, lPincodeEdt, lCountryEdt, pId));
             pViews.add(lView);
-
 
 
             ((ImageView) lView.findViewById(R.id.delete_iv)).setOnClickListener(new View.OnClickListener() {
@@ -523,16 +555,20 @@ public class AddOrEditActivity extends AppCompatActivity {
             pLinearLayout.addView(lView);
 
 
-        }else {
+        } else {
 
             View lView = mInflater.inflate(R.layout.dynamic_item, pLinearLayout, false);
             EditText lEditText = (EditText) lView.findViewById(R.id.data_edt);
             lEditText.setText(pData);
             lEditText.setInputType(pInputType);
+
+            if (pType.equals(ContactsDataTable.Type.PHONE)) {
+                lEditText.setMaxEms(12);
+            }
+
             lEditText.setHint(pType);
             lEditText.requestFocus();
             pEditTextAndIdJDOs.add(new EditTextAndIdJDO(lEditText, pId));
-//        pEditTexts.add(editText);
             pViews.add(lView);
 
             ((ImageView) lView.findViewById(R.id.delete_iv)).setOnClickListener(new View.OnClickListener() {
@@ -540,7 +576,7 @@ public class AddOrEditActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     //Get the parent View and send it to remove method .
-                    removeView((View) v.getParent(), pViews, pLinearLayout, pEditTextAndIdJDOs,pType);
+                    removeView((View) v.getParent(), pViews, pLinearLayout, pEditTextAndIdJDOs, pType);
 
                 }
             });
@@ -555,10 +591,10 @@ public class AddOrEditActivity extends AppCompatActivity {
         int lIndex = CommonUtil.getItemIndex(pViews, pView);
         pViews.remove(pView);
         String lId;
-        if(pType.equals(ContactsDataTable.Type.ADDRESS)){
-             lId = mAddressEditTextAndIdJDOs.get(lIndex).getmId();
+        if (pType.equals(ContactsDataTable.Type.ADDRESS)) {
+            lId = mAddressEditTextAndIdJDOs.get(lIndex).getmId();
             mAddressEditTextAndIdJDOs.remove(lIndex);
-        }else {
+        } else {
             lId = pEditTextAndIdJDOs.get(lIndex).getmId();
             pEditTextAndIdJDOs.remove(lIndex);
         }
@@ -587,6 +623,7 @@ public class AddOrEditActivity extends AppCompatActivity {
             return mId;
         }
     }
+
     public class EditTextAndIdAddressJDO {
         EditText mStreetEdt;
         EditText mCityEdt;
@@ -630,11 +667,94 @@ public class AddOrEditActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+
+        //Create a new Edited Data and compare with the unedited data
+        if (!mIsEditActivity) {
+            finish();
+        } else if (isNewDataSame()) {
+            finish();
+        } else {
+            AlertDialog.Builder lBuilder = new AlertDialog.Builder(this);
+            lBuilder.setTitle("Discard Changes");
+            lBuilder.setMessage("Do you want to discard the changes you made");
+            lBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            });
+            lBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            lBuilder.show();
+        }
+
+    }
+
+    private boolean isNewDataSame() {
+
+        String lNewData = "";
+        int lTempIndex = 1;
+        JSONObject lJsonObject = new JSONObject();
+        try {
+            lJsonObject.put("0", mNameEDT.getText().toString().trim());
+            for (EditTextAndIdJDO lEditTextAndIdJDO : mPhoneEditTextJDO) {
+                lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            }
+            for (EditTextAndIdJDO lEditTextAndIdJDO : mEmailEditTextAndIdJDOs) {
+                lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            }
+            for (EditTextAndIdJDO lEditTextAndIdJDO : mWebsiteEditTextAndIdJDOs) {
+                lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            }
+            for (EditTextAndIdJDO lEditTextAndIdJDO : mImEditTextAndIdJDOs) {
+                lJsonObject.put(String.valueOf(lTempIndex++), lEditTextAndIdJDO.getmEditText().getText().toString().trim());
+            }
+            for (EditTextAndIdAddressJDO lEditTextAndIdJDO : mAddressEditTextAndIdJDOs) {
+
+                JSONObject lAddressJsonObject = new JSONObject();
+                //{"STREET":"334","CITY":"Fggg","REGION":"Tn","POSTCODE":"666005","COUNTRY":"In"}
+                lAddressJsonObject.put("STREET", lEditTextAndIdJDO.getmStreetEdt().getText().toString().trim());
+                lAddressJsonObject.put("CITY", lEditTextAndIdJDO.getmCityEdt().getText().toString().trim());
+                lAddressJsonObject.put("REGION", lEditTextAndIdJDO.getmStateEdt().getText().toString().trim());
+                lAddressJsonObject.put("POSTCODE", lEditTextAndIdJDO.getmPicodeEdt().getText().toString().trim());
+                lAddressJsonObject.put("COUNTRY", lEditTextAndIdJDO.getmCountryEdt().getText().toString().trim());
+
+                lAddressJsonObject.put(String.valueOf(lTempIndex++), lAddressJsonObject.toString());
+            }
+
+            if (!mNoteEDT.getText().toString().trim().equals(""))
+                lJsonObject.put(String.valueOf(lTempIndex++), mNoteEDT.getText().toString().trim());
+
+            if (!mOrgNameEDT.getText().toString().trim().equals("") || !mOrgTitleEDT.getText().toString().trim().equals("")) {
+                JSONObject lOrgJsonObject = new JSONObject();
+                lOrgJsonObject.put("Organisation Title", mOrgTitleEDT.getText().toString().trim());
+                lOrgJsonObject.put("Organisation Name", mOrgNameEDT.getText().toString().trim());
+                lJsonObject.put(String.valueOf(lTempIndex++), lOrgJsonObject.toString());
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+         if (lJsonObject.toString().equals(mUnEditedData)) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
 
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 break;
 
             case R.id.save_menu:

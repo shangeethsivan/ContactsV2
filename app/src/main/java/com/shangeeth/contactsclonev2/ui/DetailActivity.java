@@ -64,7 +64,6 @@ public class DetailActivity extends AppCompatActivity {
         init();
 
         ensurePermissions();
-
     }
 
 
@@ -131,8 +130,10 @@ public class DetailActivity extends AppCompatActivity {
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_detail);
         mRecyclerView.setHasFixedSize(true);
+
         LinearLayoutManager lLayoutManager = new LinearLayoutManager(this);
         lLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), lLayoutManager.getOrientation()));
         mRecyclerView.setLayoutManager(lLayoutManager);
 
@@ -168,44 +169,43 @@ public class DetailActivity extends AppCompatActivity {
                 lIntent.putExtra(getString(R.string.request_code), REQUEST_CODE);
 
                 startActivityForResult(lIntent, REQUEST_CODE);
-
                 break;
+
             case android.R.id.home:
                 setResult(0, new Intent().putExtra(getString(R.string.is_data_updated), mUpdated));
                 finish();
                 break;
             case R.id.delete_contact:
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Delete Contact");
-                builder.setMessage("Are you sure you want to delete this contact");
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                final AlertDialog.Builder lBuilder = new AlertDialog.Builder(this);
+                lBuilder.setTitle("Delete Contact");
+                lBuilder.setMessage("Are you sure you want to delete this contact");
+                lBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
-                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                lBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         //Delete Contact
                         deleteContact();
                     }
                 });
-                builder.show();
+                lBuilder.show();
                 break;
         }
         return true;
     }
 
-
     private void deleteContact() {
 
         //Delete From table 2
-        ContactsDataTable contactsDataTable = new ContactsDataTable(this);
-        contactsDataTable.deleteDataForContactId(mCurrentId);
+        ContactsDataTable lContactsDataTable = new ContactsDataTable(this);
+        lContactsDataTable.deleteDataForContactId(mCurrentId);
         //Delete From table 1
-        ContactsTable contactsTable = new ContactsTable(this);
-        contactsTable.deleteContact(mCurrentId);
+        ContactsTable lContactsTable = new ContactsTable(this);
+        lContactsTable.deleteContact(mCurrentId);
 
 
         Intent lIntent = new Intent();
@@ -235,8 +235,8 @@ public class DetailActivity extends AppCompatActivity {
 
     public void handleButtonAction(View v) {
 
-        View view = (View) v.getParent();
-        TextView lDataTV = (TextView) view.findViewById(R.id.data_tv);
+        View lView = (View) v.getParent();
+        TextView lDataTV = (TextView) lView.findViewById(R.id.data_tv);
         switch (v.getId()) {
             case R.id.call_iv:
                 Intent lCallIntent = new Intent(Intent.ACTION_CALL).setData(Uri.parse("tel:" + lDataTV.getText().toString()));
@@ -252,9 +252,8 @@ public class DetailActivity extends AppCompatActivity {
                 break;
             case R.id.website_iv:
                 String lData = lDataTV.getText().toString();
-                if (!lData.contains("http://")) {
+                if (!lData.startsWith("http"))
                     lData = "http://" + lData;
-                }
                 Intent lWebsiteIntent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(lData));
                 v.getContext().startActivity(lWebsiteIntent);
                 break;

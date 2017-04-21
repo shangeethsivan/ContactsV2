@@ -62,7 +62,7 @@ public class ContactsTable {
                 lContactsJDO.setPhotoUri(lCursor.getString(lCursor.getColumnIndex(PHOTO_URI)));
                 lContactsJDO.setAccountType(lCursor.getString(lCursor.getColumnIndex(ACCOUNT_TYPE)));
                 lContactsJDO.setNote(lCursor.getString(lCursor.getColumnIndex(NOTE)));
-                lContactsJDO.setOraganization(lCursor.getString(lCursor.getColumnIndex(ORGANIZATION)));
+                lContactsJDO.setOrganization(lCursor.getString(lCursor.getColumnIndex(ORGANIZATION)));
             } while (lCursor.moveToNext());
 
         }
@@ -85,13 +85,13 @@ public class ContactsTable {
         if (lCursor.moveToFirst()) {
 
             do {
-                PrimaryContactJDO contactsJDO = new PrimaryContactJDO();
+                PrimaryContactJDO lContactJDO = new PrimaryContactJDO();
 
-                contactsJDO.setDisplayName(lCursor.getString(lCursor.getColumnIndex(DISPLAY_NAME)));
-                contactsJDO.setPhotoUri(lCursor.getString(lCursor.getColumnIndex(PHOTO_URI)));
-                contactsJDO.setId(lCursor.getString(lCursor.getColumnIndex(_ID)));
+                lContactJDO.setDisplayName(lCursor.getString(lCursor.getColumnIndex(DISPLAY_NAME)));
+                lContactJDO.setPhotoUri(lCursor.getString(lCursor.getColumnIndex(PHOTO_URI)));
+                lContactJDO.setId(lCursor.getString(lCursor.getColumnIndex(_ID)));
 
-                lContactJDOArrayList.add(contactsJDO);
+                lContactJDOArrayList.add(lContactJDO);
 
             } while (lCursor.moveToNext());
 
@@ -138,22 +138,6 @@ public class ContactsTable {
 
     }
 
-    public void insertRow( PrimaryContactJDO pJDO) {
-
-        SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(_ID, pJDO.getId());
-        values.put(DISPLAY_NAME, pJDO.getDisplayName());
-        values.put(PHONETIC_NAME, pJDO.getPhoneticName());
-        values.put(PHOTO_URI, pJDO.getPhotoUri());
-        values.put(ACCOUNT_TYPE, pJDO.getAccountType());
-        values.put(NOTE, pJDO.getNote());
-        values.put(ORGANIZATION, pJDO.getOraganization());
-
-        lSqLiteDatabase.insert(TABLE_NAME, null, values);
-
-    }
 
     public void updateRow(PrimaryContactJDO pJDO){
 

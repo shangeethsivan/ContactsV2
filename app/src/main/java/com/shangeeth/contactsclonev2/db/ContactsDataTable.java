@@ -90,11 +90,11 @@ public class ContactsDataTable {
         try {
             for (SecondaryContactsJDO pContactJDO : pContactJDOs) {
 
-                ContentValues values = new ContentValues();
-                values.put(TYPE, pContactJDO.getType());
-                values.put(DATA, pContactJDO.getData());
+                ContentValues lValues = new ContentValues();
+                lValues.put(TYPE, pContactJDO.getType());
+                lValues.put(DATA, pContactJDO.getData());
 
-                lSqLiteDatabase.update(TABLE_NAME, values, _ID + "=?", new String[]{pContactJDO.getId()});
+                lSqLiteDatabase.update(TABLE_NAME, lValues, _ID + "=?", new String[]{pContactJDO.getId()});
             }
             lSqLiteDatabase.setTransactionSuccessful();
         } finally {

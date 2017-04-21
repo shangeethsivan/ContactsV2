@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ContactsClonev2</string>
+    <string name="app_name">Contacts</string>
     <string name="name">name</string>
     <string name="id_extra">id</string>
     <string name="contact_added">contact_added</string>

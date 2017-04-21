@@ -32,10 +32,10 @@ public class HomeActivityCustomRecyclerViewAdapter extends RecyclerView.Adapter<
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.rec_view_item,parent,false);
-        ViewHolder viewHolder = new ViewHolder(view);
+        View lView = inflater.inflate(R.layout.rec_view_item,parent,false);
+        ViewHolder lViewHolder = new ViewHolder(lView);
 
-        return viewHolder;
+        return lViewHolder;
     }
 
     @Override

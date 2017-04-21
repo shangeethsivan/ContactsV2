@@ -30,6 +30,8 @@
 
                 <EditText
                     android:id="@+id/name_edt_txt"
+                    android:layout_marginRight="25dp"
+                    android:hint="Name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edt_bg" />
@@ -206,6 +208,7 @@
                 <EditText
                     android:id="@+id/note_edt"
                     android:hint="Note"
+                    android:layout_marginRight="25dp"
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -229,13 +232,17 @@
                     android:id="@+id/org_title"
                     android:hint="Title"
                     android:layout_marginTop="5dp"
+                    android:layout_marginRight="25dp"
                     android:layout_width="match_parent"
+                    android:lines="1"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edt_bg" />
                 <EditText
                     android:id="@+id/org_name"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="25dp"
                     android:hint="Organization Name"
+                    android:lines="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/edt_bg" />

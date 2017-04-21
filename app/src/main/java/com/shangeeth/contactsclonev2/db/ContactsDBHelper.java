@@ -29,12 +29,7 @@ public class ContactsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        ContactsTable.dropTable(db);
-        ContactsTable.createTable(db);
-
-        ContactsDataTable.dropTable(db);
-        ContactsDataTable.createTable(db);
+        // Alter Table if needed.
     }
 
 
