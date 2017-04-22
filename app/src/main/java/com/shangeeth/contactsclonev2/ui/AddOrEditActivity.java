@@ -163,6 +163,9 @@ public class AddOrEditActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Loading all the data into the fields from the intent value
+     */
     public void loadAllDatas() {
 
         mNameEDT.setText(mContactName);
@@ -215,6 +218,10 @@ public class AddOrEditActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Adding the received data to a temporary String as json to be used at the end of activity.
+     * @param pData
+     */
     private void addToUnEditedData(String pData) {
         try {
             JSONObject jsonObject;
@@ -231,6 +238,9 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * If the current activity is add Contact activity then load empty fields for all dynamic views
+     */
     public void loadEmptyFields() {
 
         addView(mLinearLayoutPhone, mPhoneEditTextJDO, mPhoneViews, InputType.TYPE_CLASS_PHONE, "", "newData", ContactsDataTable.Type.PHONE);
@@ -252,6 +262,9 @@ public class AddOrEditActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Setting onClick Listeners for add button
+     */
     public void setOnClickListeners() {
 
         mPhoneAddIV.setOnClickListener(new View.OnClickListener() {
@@ -300,6 +313,9 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Saves the contact and finishes the activity
+     */
     private void saveContacts() {
 
         if (!mNameEDT.getText().toString().trim().equals("") && !areAllFieldsEmpty()) {
@@ -319,8 +335,9 @@ public class AddOrEditActivity extends AppCompatActivity {
                 lPrimaryContactJDO.setOrganization(lJsonObjectOrg.toString());
             }
             ContactsTable lTable = new ContactsTable(this);
+
             //If adding new Contacts add the contacts and update the Current ID.
-            if (mCurrentId == null || mCurrentId.equals("")) {
+            if (!mIsEditActivity) {
                 mCurrentId = String.valueOf(lTable.insertNewRow(lPrimaryContactJDO));
             } else {
                 lTable.updateRow(lPrimaryContactJDO);
@@ -409,7 +426,6 @@ public class AddOrEditActivity extends AppCompatActivity {
                     }
                     lSecondaryContactsJDO.setData(lJsonObjectAddress.toString());
 
-//                    lSecondaryContactsJDO.setData(lEditTextAndIdJDO.getmEditText().getText().toString().trim());
                     lDataToBeAdded.add(lSecondaryContactsJDO);
                 }
             }
@@ -450,6 +466,10 @@ public class AddOrEditActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Checks weather all fields are empty
+     * @return returns true if all fields are empty else returns false
+     */
     public boolean areAllFieldsEmpty() {
 
         for (EditTextAndIdJDO lEditTextAndIdJDO : mPhoneEditTextJDO) {
@@ -506,12 +526,14 @@ public class AddOrEditActivity extends AppCompatActivity {
     }
 
     /**
-     * @param pLinearLayout
-     * @param pEditTextAndIdJDOs
-     * @param pViews
-     * @param pInputType
-     * @param pData
-     * @param pId
+     * Adds a dynamic View to the particular layout specified
+     * @param pLinearLayout The layout to be added
+     * @param pEditTextAndIdJDOs the JDO arraylist to be stored for reference
+     * @param pViews the Views arrayList to be stored for reference
+     * @param pInputType the input type - number or email
+     * @param pData the data being added - The value
+     * @param pId the Id of the data being added - refering the to table Id stored in pEditTextAndIdJDOs for further reference
+     * @param pType the Type of data being added
      */
     public void addView(final LinearLayout pLinearLayout, final ArrayList<EditTextAndIdJDO> pEditTextAndIdJDOs, final ArrayList<View> pViews, int pInputType, String pData, String pId, final String pType) {
 
@@ -590,6 +612,14 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Removes the particular View
+     * @param pView the View to be removed
+     * @param pViews the View arraylist
+     * @param pLinearLayout The Layout from which the view has to be removed
+     * @param pEditTextAndIdJDOs the JDO list from which the data has to be removed
+     * @param pType the type to data to be removed - particularly used to differentiate from address
+     */
     private void removeView(View pView, ArrayList<View> pViews, LinearLayout pLinearLayout, ArrayList<EditTextAndIdJDO> pEditTextAndIdJDOs, String pType) {
 
         pLinearLayout.removeView(pView);
@@ -611,6 +641,9 @@ public class AddOrEditActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Used for storing the reference to the Dynamically added editText and the added data Id
+     */
     public class EditTextAndIdJDO {
         EditText mEditText;
         String mId;
@@ -708,6 +741,10 @@ public class AddOrEditActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Checks weather the data which was present initially is same as the data which is present when back is pressed
+     * @return returns true if data is same else returns false
+     */
     private boolean isNewDataSame() {
 
         int lTempIndex = 1;

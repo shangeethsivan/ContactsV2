@@ -59,6 +59,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Initializing the required variables
+     */
     private void init() {
         maddContactFab = (FloatingActionButton) findViewById(R.id.add_contact_fab);
 
@@ -79,6 +82,9 @@ public class HomeActivity extends AppCompatActivity {
         }));
     }
 
+    /**
+     * Adding onClick Listeners
+     */
     public void setOnClickListeners() {
 
         maddContactFab.setOnClickListener(new View.OnClickListener() {
@@ -94,6 +100,9 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Loading list of Contacts from the local Sqlite Database using the ContactsTable instance
+     */
     public void loadContacts() {
 
         ContactsTable lTable = new ContactsTable(this);
@@ -122,6 +131,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * If the app is opened for the first time check runtime permissions and load contacts from the content provider using the AsyncTask class
+     */
     public void loadContactsFromContentProvider() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -134,7 +146,10 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    public class LoadContactsInBackground extends AsyncTask<Void, Void, Void> {
+    /**
+     * Loading all contacts in background
+     */
+    private class LoadContactsInBackground extends AsyncTask<Void, Void, Void> {
 
         ProgressDialog mProgressDialog;
 

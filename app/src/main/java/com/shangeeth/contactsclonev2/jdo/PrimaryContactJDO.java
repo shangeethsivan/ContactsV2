@@ -2,10 +2,10 @@ package com.shangeeth.contactsclonev2.jdo;
 
 import java.io.Serializable;
 
-/**
- * Created by user on 17/04/17.
- */
 
+/**
+ * This JDO will be Used to store the Unique data of the contact which will be present in {@link com.shangeeth.contactsclonev2.db.ContactsTable}
+ */
 public class PrimaryContactJDO implements Serializable {
 
     String id;

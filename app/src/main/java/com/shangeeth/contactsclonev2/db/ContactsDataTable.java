@@ -39,10 +39,20 @@ public class ContactsDataTable {
         }
     }
 
+    /**
+     * Executes the create query
+     *
+     * @param db the db instance
+     */
     public static void createTable(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + "(" + _ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + CONTACT_ID + " INT," + TYPE + " TEXT," + DATA + " TEXT)");
     }
 
+    /**
+     * Drops the table
+     *
+     * @param db
+     */
     public static void dropTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     }
@@ -61,6 +71,11 @@ public class ContactsDataTable {
         lSqliteDatabase.close();
     }
 
+    /**
+     * Insert all rows which is present in the arrayList
+     *
+     * @param pContactJDOs the list of data(in the form of {@link SecondaryContactsJDO}) present to be added to the table
+     */
     public void insertRows(ArrayList<SecondaryContactsJDO> pContactJDOs) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
@@ -104,6 +119,12 @@ public class ContactsDataTable {
     }
 
 
+    /**
+     * Gets the data in the {@link SecondaryContactsJDO} form for the specified id
+     *
+     * @param id the id of the data
+     * @return returns the data in {@link SecondaryContactsJDO} type
+     */
     public ArrayList<SecondaryContactsJDO> getDataForId(String id) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
@@ -130,6 +151,11 @@ public class ContactsDataTable {
         return lContactsJDOs;
     }
 
+    /**
+     * Delete all the data for the specified id's in the list
+     *
+     * @param pIds the list of id's to be deleted
+     */
     public void deleteDataForIds(ArrayList<String> pIds) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
@@ -148,6 +174,11 @@ public class ContactsDataTable {
         }
     }
 
+    /**
+     * Delete Contact for a specified id
+     *
+     * @param pContactId the contact to be deleted
+     */
     public void deleteDataForContactId(String pContactId) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
@@ -155,9 +186,14 @@ public class ContactsDataTable {
         lSqLiteDatabase.delete(TABLE_NAME, CONTACT_ID + "=?", new String[]{pContactId});
 
         lSqLiteDatabase.close();
-        
+
     }
 
+    /**
+     * Inserts a new data to the table if not exists else it gets updated found using the "newData" flag in the id field of the {@link SecondaryContactsJDO} which is taken in as a param
+     *
+     * @param pSecondaryContactsJDOs the data to be inserted or updated
+     */
     public void insertOrUpdateData(ArrayList<SecondaryContactsJDO> pSecondaryContactsJDOs) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();

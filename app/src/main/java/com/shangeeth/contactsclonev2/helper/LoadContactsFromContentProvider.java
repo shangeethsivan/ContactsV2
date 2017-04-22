@@ -16,14 +16,17 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * Created by user on 17/04/17.
+ * This class will be used to handle loading the contact from the content provider
  */
-
 public class LoadContactsFromContentProvider {
 
 
     private String TAG = LoadContactsFromContentProvider.class.getSimpleName();
 
+    /**
+     * Load contacts for the first table which will have the unique details of the contact
+     * @param context the Context of the activity from which the method is called
+     */
     public void loadContactsTable(Context context) {
 
         ArrayList<PrimaryContactJDO> lPrimaryContactJDOs = new ArrayList<>();
@@ -87,6 +90,10 @@ public class LoadContactsFromContentProvider {
 
     }
 
+    /**
+     * Loads contacts for the second table which will have the repeated data
+     * @param pContext the context of the activity from which this method is called
+     */
     public void loadContactsDataTable(Context pContext){
 
         ContentResolver lContentResolver = pContext.getContentResolver();

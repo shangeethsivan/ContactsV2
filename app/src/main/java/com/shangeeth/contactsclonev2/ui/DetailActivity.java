@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -61,12 +62,20 @@ public class DetailActivity extends AppCompatActivity {
 
         mCurrentId = getIntent().getStringExtra(getString(R.string.id_extra));
 
+        //Setting Color for the status bar
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.getWindow().setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        }
+
         init();
 
         ensurePermissions();
     }
 
 
+    /**
+     * Ensuring permissions -- Runtime permission check
+     */
     private void ensurePermissions() {
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -77,6 +86,36 @@ public class DetailActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * Initialization of required variables.
+     */
+    public void init() {
+
+        mContactsTable = new ContactsTable(this);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_detail);
+        mRecyclerView.setHasFixedSize(true);
+
+        LinearLayoutManager lLayoutManager = new LinearLayoutManager(this);
+        lLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), lLayoutManager.getOrientation()));
+        mRecyclerView.setLayoutManager(lLayoutManager);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mProfilePicIV = (ImageView) findViewById(R.id.profile_pic_collapsing);
+
+    }
+
+    /**
+     * Loading all the data from the local Sqlite Database
+     */
     private void loadDataFromTable() {
 
         mContactsJDO = mContactsTable.getContactsForId(mCurrentId);
@@ -102,11 +141,9 @@ public class DetailActivity extends AppCompatActivity {
         mContactsDataJDOs.add(lOrganizationJDO);
         }
 
-
         /*
         Loading data for title and image
          */
-
         mToolbarLayout.setTitle(mContactsJDO.getDisplayName());
         Picasso.with(this)
                 .load(mContactsJDO.getPhotoUri())
@@ -114,33 +151,10 @@ public class DetailActivity extends AppCompatActivity {
                 .into(mProfilePicIV);
 
 
+        // Performing Customized Sort for the data to be shown in order.
         Collections.sort(mContactsDataJDOs);
         mCustomAdapter = new DetailActivityCustomRecylerViewAdapter(this, mContactsDataJDOs);
         mRecyclerView.setAdapter(mCustomAdapter);
-
-    }
-
-
-    public void init() {
-
-        mContactsTable = new ContactsTable(this);
-
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view_detail);
-        mRecyclerView.setHasFixedSize(true);
-
-        LinearLayoutManager lLayoutManager = new LinearLayoutManager(this);
-        lLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), lLayoutManager.getOrientation()));
-        mRecyclerView.setLayoutManager(lLayoutManager);
-
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mProfilePicIV = (ImageView) findViewById(R.id.profile_pic_collapsing);
 
     }
 
@@ -202,6 +216,9 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Initiate Delete Contact and finish the activity with updated result
+     */
     private void deleteContact() {
 
         //Delete From table 2
@@ -217,6 +234,7 @@ public class DetailActivity extends AppCompatActivity {
         lIntent.putExtra(getString(R.string.contact_deleted), true);
         setResult(0, lIntent);
         finish();
+        overridePendingTransition(R.anim.from_left,R.anim.to_right);
 
     }
 
@@ -236,7 +254,10 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-
+    /**
+     * Handling the Dynamically generated buttons action
+     * @param v The View
+     */
     public void handleButtonAction(View v) {
 
         View lView = (View) v.getParent();

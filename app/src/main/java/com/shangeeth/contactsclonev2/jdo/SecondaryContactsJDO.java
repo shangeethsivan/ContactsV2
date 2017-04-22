@@ -6,10 +6,10 @@ import com.shangeeth.contactsclonev2.util.CommonUtil;
 
 import java.io.Serializable;
 
-/**
- * Created by user on 18/04/17.
- */
 
+/**
+ * Used to Store the repeated data which will be present in the {@link com.shangeeth.contactsclonev2.db.ContactsDataTable}
+ */
 public class SecondaryContactsJDO implements Serializable,Comparable<SecondaryContactsJDO>{
 
     String contactId;

@@ -36,16 +36,29 @@ public class ContactsTable {
             PHOTO_URI + " TEXT," + NOTE + " TEXT," + ORGANIZATION + " TEXT)";
 
 
+    /**
+     * Executes the create query
+     *
+     * @param db the db instance
+     */
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
 
+    /**
+     * Executes the drop table query
+     */
     public static void dropTable(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
     }
 
 
+    /**
+     * Get the data in the {@link PrimaryContactJDO} form for a specified id
+     * @param id the id for the data to be fetched
+     * @return returns the data in the {@link PrimaryContactJDO} type
+     */
     public PrimaryContactJDO getContactsForId(String id) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
@@ -73,6 +86,10 @@ public class ContactsTable {
     }
 
 
+    /**
+     * Gets all the contacts id,name and image to be shown in the home activity
+     * @return returns the list of Contacts
+     */
     public ArrayList<PrimaryContactJDO> getContactsForList() {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getReadableDatabase();
@@ -102,6 +119,10 @@ public class ContactsTable {
         return lContactJDOArrayList;
     }
 
+    /**
+     * Deletes the contact in the specified id
+     * @param pId the contact to be deleted
+     */
     public void deleteContact(String pId){
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
@@ -111,6 +132,10 @@ public class ContactsTable {
         lSqLiteDatabase.close();
     }
 
+    /**
+     *  Inserts bulk data from the content provider
+     * @param pContactJDOs the list of data to be added in {@link PrimaryContactJDO} form
+     */
     public void insertData(ArrayList<PrimaryContactJDO> pContactJDOs) {
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
@@ -139,6 +164,10 @@ public class ContactsTable {
     }
 
 
+    /**
+     * Updates the Particular row in the table
+     * @param pJDO
+     */
     public void updateRow(PrimaryContactJDO pJDO){
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
@@ -152,6 +181,11 @@ public class ContactsTable {
 
     }
 
+    /**
+     * Insert new row of data to the table
+     * @param pJDO the data which is present in the {@link PrimaryContactJDO} form
+     * @return returns the Id of the stored contact.
+     */
     public int insertNewRow(PrimaryContactJDO pJDO){
 
         SQLiteDatabase lSqLiteDatabase = new ContactsDBHelper(mContext).getWritableDatabase();
