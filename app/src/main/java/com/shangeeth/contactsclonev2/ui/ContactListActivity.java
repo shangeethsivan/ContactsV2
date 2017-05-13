@@ -17,23 +17,26 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.shangeeth.contactsclonev2.R;
-import com.shangeeth.contactsclonev2.adapters.HomeActivityCustomRecyclerViewAdapter;
+import com.shangeeth.contactsclonev2.adapters.ContactsListAdapter;
 import com.shangeeth.contactsclonev2.db.ContactsTable;
 import com.shangeeth.contactsclonev2.helper.LoadContactsFromContentProvider;
 import com.shangeeth.contactsclonev2.jdo.PrimaryContactJDO;
-import com.shangeeth.contactsclonev2.listeners.RecyclerItemClickListener;
+import com.shangeeth.contactsclonev2.listeners.CustomOnItemTouchListener;
 
 import java.util.ArrayList;
 
-public class HomeActivity extends AppCompatActivity {
+public class ContactListActivity extends AppCompatActivity {
 
 
     RecyclerView mRecyclerView;
     private SharedPreferences mSharedPreferences;
-    HomeActivityCustomRecyclerViewAdapter mRecyclerViewAdapter;
+    ContactsListAdapter mRecyclerViewAdapter;
     private ArrayList<PrimaryContactJDO> mContactListJDO;
     private FloatingActionButton maddContactFab;
     public static final int REQUEST_CODE = 100;
@@ -57,6 +60,8 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             loadContactsFromContentProvider();
         }
+
+
     }
 
     /**
@@ -72,12 +77,46 @@ public class HomeActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(lLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(mRecyclerView.getContext(), lLayoutManager.getOrientation()));
 
-        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+        ItemTouchHelper lItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
             @Override
-            public void onItemClick(View view, int position) {
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
 
-                startActivityForResult(new Intent(HomeActivity.this, DetailActivity.class).putExtra(getString(R.string.id_extra), mContactListJDO.get(position).getId()), 0);
-                overridePendingTransition(R.anim.from_right,R.anim.to_left);
+                int dragFlags = ItemTouchHelper.UP | ItemTouchHelper.DOWN;
+                int swipeFlags = ItemTouchHelper.START | ItemTouchHelper.END;
+
+                return makeMovementFlags(dragFlags,swipeFlags);
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+
+                mRecyclerViewAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                Log.d("ContactListAdapter", "onSwiped: "+direction+" Left:"+ItemTouchHelper.ANIMATION_TYPE_SWIPE_CANCEL);
+                mRecyclerViewAdapter.onItemRemoved(viewHolder.getAdapterPosition());
+            }
+        });
+
+        lItemTouchHelper.attachToRecyclerView(mRecyclerView);
+//
+//        mRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(this, new RecyclerItemClickListener.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, int position) {
+//
+//                startActivityForResult(new Intent(ContactListActivity.this, DetailActivity.class).putExtra(getString(R.string.id_extra), mContactListJDO.get(position).getId()), 0);
+//                overridePendingTransition(R.anim.from_right,R.anim.to_left);
+//            }
+//        }));
+
+
+        mRecyclerView.addOnItemTouchListener(new CustomOnItemTouchListener(this, new CustomOnItemTouchListener.OnItemClickListener() {
+            @Override
+            public void onItemClick() {
+                Toast.makeText(ContactListActivity.this, "Long press ocured", Toast.LENGTH_SHORT).show();
             }
         }));
     }
@@ -90,7 +129,7 @@ public class HomeActivity extends AppCompatActivity {
         maddContactFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(HomeActivity.this, AddOrEditActivity.class)
+                startActivityForResult(new Intent(ContactListActivity.this, AddOrEditActivity.class)
                         .putExtra(getString(R.string.request_code),REQUEST_CODE),REQUEST_CODE);
                 overridePendingTransition(R.anim.from_bottom,R.anim.to_up);
 
@@ -108,7 +147,7 @@ public class HomeActivity extends AppCompatActivity {
         ContactsTable lTable = new ContactsTable(this);
 
         mContactListJDO = lTable.getContactsForList();
-        mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this, mContactListJDO);
+        mRecyclerViewAdapter = new ContactsListAdapter(this, mContactListJDO);
 
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
@@ -155,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            mProgressDialog = new ProgressDialog(HomeActivity.this);
+            mProgressDialog = new ProgressDialog(ContactListActivity.this);
             mProgressDialog.setTitle("Please Wait");
             mProgressDialog.setMessage("Loading Contacts");
             mProgressDialog.setCancelable(false);
@@ -167,8 +206,8 @@ public class HomeActivity extends AppCompatActivity {
 
             //Store contacts in sqlite from content provider
             LoadContactsFromContentProvider loadContactsFromContentProvider = new LoadContactsFromContentProvider();
-            loadContactsFromContentProvider.loadContactsTable(HomeActivity.this);
-            loadContactsFromContentProvider.loadContactsDataTable(HomeActivity.this);
+            loadContactsFromContentProvider.loadContactsTable(ContactListActivity.this);
+            loadContactsFromContentProvider.loadContactsDataTable(ContactListActivity.this);
 
             //Writing boolean areContactsLoaded to shared preference
             SharedPreferences.Editor lEditor = mSharedPreferences.edit();
@@ -195,7 +234,7 @@ public class HomeActivity extends AppCompatActivity {
                 mContactListJDO.clear();
 
                 loadContacts();
-                mRecyclerViewAdapter = new HomeActivityCustomRecyclerViewAdapter(this, mContactListJDO);
+                mRecyclerViewAdapter = new ContactsListAdapter(this, mContactListJDO);
                 mRecyclerView.setAdapter(mRecyclerViewAdapter);
                 if(data.getBooleanExtra(getString(R.string.contact_added),false)){
                     Snackbar.make(mRecyclerView,"Contact Added Successfully",Snackbar.LENGTH_SHORT).show();

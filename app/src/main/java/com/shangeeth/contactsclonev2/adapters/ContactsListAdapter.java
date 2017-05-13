@@ -14,15 +14,16 @@ import com.shangeeth.contactsclonev2.util.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 
-public class HomeActivityCustomRecyclerViewAdapter extends RecyclerView.Adapter<HomeActivityCustomRecyclerViewAdapter.ViewHolder> {
+public class ContactsListAdapter extends RecyclerView.Adapter<ContactsListAdapter.ViewHolder> {
 
 
     ArrayList<PrimaryContactJDO> mContactsJDOs;
     private Context mContext;
 
-    public HomeActivityCustomRecyclerViewAdapter(Context mContext, ArrayList<PrimaryContactJDO> contactsJDOs) {
+    public ContactsListAdapter(Context mContext, ArrayList<PrimaryContactJDO> contactsJDOs) {
         this.mContext = mContext;
         this.mContactsJDOs = contactsJDOs;
     }
@@ -55,6 +56,24 @@ public class HomeActivityCustomRecyclerViewAdapter extends RecyclerView.Adapter<
     @Override
     public int getItemCount() {
         return mContactsJDOs.size();
+    }
+
+    public void onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(mContactsJDOs, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(mContactsJDOs, i, i - 1);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
+    public void onItemRemoved(int position){
+        mContactsJDOs.remove(position);
+        notifyDataSetChanged();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

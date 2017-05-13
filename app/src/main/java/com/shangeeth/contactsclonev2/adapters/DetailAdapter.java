@@ -1,10 +1,7 @@
 package com.shangeeth.contactsclonev2.adapters;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +23,14 @@ import java.util.ArrayList;
  * Created by user on 18/04/17.
  */
 
-public class DetailActivityCustomRecylerViewAdapter extends RecyclerView.Adapter<DetailActivityCustomRecylerViewAdapter.ViewHolder> {
+public class DetailAdapter extends RecyclerView.Adapter<DetailAdapter.ViewHolder> {
 
     private Context mContext;
     private ArrayList<SecondaryContactsJDO> mContactsJDOs;
     private boolean mIsNewCategory = true;
     private String mLastDisplayedType = "";
 
-    public DetailActivityCustomRecylerViewAdapter(Context mContext, ArrayList<SecondaryContactsJDO> contactsPOJOs) {
+    public DetailAdapter(Context mContext, ArrayList<SecondaryContactsJDO> contactsPOJOs) {
         this.mContext = mContext;
         this.mContactsJDOs = contactsPOJOs;
     }

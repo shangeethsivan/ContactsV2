@@ -22,14 +22,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.shangeeth.contactsclonev2.R;
-import com.shangeeth.contactsclonev2.adapters.DetailActivityCustomRecylerViewAdapter;
+import com.shangeeth.contactsclonev2.adapters.DetailAdapter;
 import com.shangeeth.contactsclonev2.db.ContactsDataTable;
 import com.shangeeth.contactsclonev2.db.ContactsTable;
 import com.shangeeth.contactsclonev2.jdo.PrimaryContactJDO;
@@ -50,7 +48,7 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<SecondaryContactsJDO> mContactsDataJDOs;
     private String mCurrentId;
     private boolean mUpdated = false;
-    private DetailActivityCustomRecylerViewAdapter mCustomAdapter;
+    private DetailAdapter mCustomAdapter;
     private int REQUEST_CODE = 101;
 
     @Override
@@ -153,7 +151,7 @@ public class DetailActivity extends AppCompatActivity {
 
         // Performing Customized Sort for the data to be shown in order.
         Collections.sort(mContactsDataJDOs);
-        mCustomAdapter = new DetailActivityCustomRecylerViewAdapter(this, mContactsDataJDOs);
+        mCustomAdapter = new DetailAdapter(this, mContactsDataJDOs);
         mRecyclerView.setAdapter(mCustomAdapter);
 
     }
@@ -247,7 +245,7 @@ public class DetailActivity extends AppCompatActivity {
             mUpdated = true;
             loadDataFromTable();
 
-            mCustomAdapter = new DetailActivityCustomRecylerViewAdapter(this, mContactsDataJDOs);
+            mCustomAdapter = new DetailAdapter(this, mContactsDataJDOs);
             mRecyclerView.setAdapter(mCustomAdapter);
 
             Snackbar.make((CoordinatorLayout) findViewById(R.id.coordinator_layout), "Contact Updated Successfully", Snackbar.LENGTH_SHORT).show();
