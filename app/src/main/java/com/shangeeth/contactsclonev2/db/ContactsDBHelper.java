@@ -21,10 +21,8 @@ public class ContactsDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
         ContactsTable.createTable(db);
         ContactsDataTable.createTable(db);
-
     }
 
     @Override
